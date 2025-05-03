@@ -1,25 +1,28 @@
 package vcmsa.projects.buggybank
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.getValue
+import vcmsa.projects.buggybank.databinding.FragmentMainPageBinding
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
+private const val TAG = "MainPageFragment"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [MainPageFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class MainPageFragment : Fragment() {
-    // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private var _binding: FragmentMainPageBinding? = null
+    private val binding get() = _binding!!
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,33 +30,49 @@ class MainPageFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+        Log.d(TAG, "onCreate: PARAM1: $param1, PARAM2: $param2")
     }
     
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_main_page, container, false)
+        _binding = FragmentMainPageBinding.inflate(inflater, container, false)
+        return binding.root
     }
     
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment MainPageFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            MainPageFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        Log.d(TAG, "onViewCreated")
+        val user = FirebaseAuth.getInstance().currentUser
+        val db = FirebaseDatabase.getInstance()
+        val textViewUserName = _binding?.mainText
+        
+        user?.let {
+            val userId = it.uid
+            val userRef = db.getReference("users").child(userId).child("username")
+            
+            userRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    Log.d(TAG, "onDataChange: snapshot: $snapshot")
+                    val userName = snapshot.getValue<String>()
+                    textViewUserName?.text = (userName ?: "No name found").toString()
                 }
-            }
+                
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e(TAG, "onCancelled: $error")
+                    textViewUserName?.text = "Error fetching user data"
+                }
+            })
+        }
+        
+        Log.d(TAG, "onViewCreated: user: $user")
     }
+    
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d(TAG, "onDestroyView")
+        _binding = null
+    }
+    
 }
