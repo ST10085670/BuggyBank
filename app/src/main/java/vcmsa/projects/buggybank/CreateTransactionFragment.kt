@@ -80,19 +80,19 @@ class CreateTransactionFragment : Fragment() {
         spType.adapter = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_spinner_dropdown_item,
-            listOf("Expense", "Income")
+            listOf("Select Type", "Expense", "Income")
         )
         
         spCategory.adapter = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_spinner_dropdown_item,
-            listOf("Clothing", "Entertainment", "Food", "Fuel", "Groceries", "Health", "Housing", "Internet", "Insurance", "Salary", "Wages", "Investments")
+            listOf("Select Category","Clothing", "Entertainment", "Food", "Fuel", "Groceries", "Health", "Housing", "Internet", "Insurance", "Salary", "Wages", "Investments")
         )
         
         spPayment.adapter = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_spinner_dropdown_item,
-            listOf("Cash", "Credit Card", "Debit Card")
+            listOf("Select Payment","Cash", "Credit Card", "Debit Card")
         )
         
         etDate.setOnClickListener { showDatePicker(etDate) }
