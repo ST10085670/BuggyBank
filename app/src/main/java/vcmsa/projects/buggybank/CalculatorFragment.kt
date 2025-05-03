@@ -32,7 +32,7 @@ class CalculatorFragment : Fragment() {
             R.id.btnNine to "9",
             R.id.btnPlus to "+",
             R.id.btnMinus to "-",
-            R.id.btnMultiply to "X",
+            R.id.btnMultiply to "*",
             R.id.btnDivide to "/",
             R.id.btnOpenBracket to "(",
             R.id.btnCloseBracket to ")",

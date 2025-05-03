@@ -35,6 +35,7 @@ private val FragCreatePopUp = CreatPopUpFragment()
 private val FragTransactionRecords = TransactionRecords()
 private val FragSetABudget = SetBudgetFragment()
 private val FragCalculator = CalculatorFragment()
+private val FragCurrencyConvertor = CurrencyConverterFragment()
 //private val FragSettings = SettingsFragment()
 //private val FragLogout
 
@@ -101,7 +102,7 @@ class MenuBar : AppCompatActivity() {
                     R.id.is_setABudget -> replaceFrag(FragSetABudget)
                     R.id.is_reports -> replaceFrag(FragReport)
                     R.id.is_calculator -> replaceFrag(FragCalculator)
-                    R.id.is_currencyConvertor -> Toast.makeText(this, "Currency convertor coming soon",Toast.LENGTH_LONG).show()
+                    R.id.is_currencyConvertor -> replaceFrag(FragCurrencyConvertor)
                     R.id.is_switchAccount -> Toast.makeText(this, "Switch account coming soon", Toast.LENGTH_LONG).show()
                     R.id.is_budgetBuddy -> Toast.makeText(this, "Budget buddy coming soon", Toast.LENGTH_LONG).show()
                     R.id.is_logut -> Toast.makeText(this, "You will be logged out", Toast.LENGTH_LONG).show()
