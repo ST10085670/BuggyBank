@@ -80,4 +80,7 @@ dependencies {
     implementation(libs.williamchart)
     implementation(libs.mpandroidchart)
 
+    //implementation for calculator
+    implementation(libs.exp4j)
+
 }

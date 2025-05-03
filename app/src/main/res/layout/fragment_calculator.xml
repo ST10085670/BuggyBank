@@ -22,7 +22,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/btFour"
+        android:id="@+id/btnFour"
         android:layout_width="80dp"
         android:layout_height="75dp"
         android:layout_marginEnd="12dp"
@@ -274,7 +274,7 @@
         android:textColor="@color/black"
         android:textSize="31dp"
         app:layout_constraintBottom_toTopOf="@+id/btnTwo"
-        app:layout_constraintEnd_toStartOf="@+id/btFour" />
+        app:layout_constraintEnd_toStartOf="@+id/btnFour" />
 
     <Button
         android:id="@+id/btnNine"
@@ -287,7 +287,7 @@
         android:text="9"
         android:textColor="@color/black"
         android:textSize="31dp"
-        app:layout_constraintBottom_toTopOf="@+id/btFour"
+        app:layout_constraintBottom_toTopOf="@+id/btnFour"
         app:layout_constraintEnd_toStartOf="@+id/btnDivide" />
 
     <Button
