@@ -23,7 +23,6 @@ private lateinit var listView: ListView
 
 class ReportFragment : Fragment() {
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -37,7 +36,7 @@ class ReportFragment : Fragment() {
         val user = FirebaseAuth.getInstance().currentUser
         if (user != null) {
             val userId = user.uid
-            val dbRef = FirebaseDatabase.getInstance().getReference("Transactions").child(userId)
+            val dbRef = FirebaseDatabase.getInstance().getReference("transactions").child(userId)
 
 
             dbRef.addValueEventListener(object : ValueEventListener {

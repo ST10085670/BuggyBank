@@ -18,9 +18,11 @@
 
 
 
-            <item android:id="@+id/is_switchAccount"
-                android:icon="@drawable/rounded_sync_alt_24"
-                android:title="Swicth Account"/>
+    <item
+        android:id="@+id/is_switchAccount"
+        android:icon="@drawable/rounded_sync_alt_24"
+        android:title="Swicth Account"
+       />
 
 
 

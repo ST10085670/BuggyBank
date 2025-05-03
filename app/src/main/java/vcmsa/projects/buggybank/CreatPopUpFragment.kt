@@ -28,7 +28,7 @@ class CreatPopUpFragment : DialogFragment() {
             val frag1 = CreateTransactionFragment()
             requireActivity().supportFragmentManager.beginTransaction()
                 .replace(R.id.fragmentContainerView, frag1)
-                .addToBackStack(null) //allows the program to remember hte previous frag when user clicks the 'back button'
+                .addToBackStack(null) //allows the program to remember the previous frag when user clicks the 'back button'
                 .commit()
             dismiss() //this closes the popup after navigating to the createTransaction fragment
         }
