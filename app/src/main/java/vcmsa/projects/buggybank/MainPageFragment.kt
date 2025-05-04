@@ -69,7 +69,7 @@ class MainPageFragment : Fragment() {
         // If the user is logged in, get the username from the database
         user?.let {
             val userId = it.uid
-            val userRef = db.getReference("users").child(userId).child("username")
+            val userRef = db.getReference("users").child(userId).child("details").child("username")
 
             // Add a listener to get the username from the database
             userRef.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -89,7 +89,7 @@ class MainPageFragment : Fragment() {
                 }
             })
 
-            val walletRef = db.getReference("transactions").child(userId).child("amount")
+            val walletRef = db.getReference("users").child(userId).child("transactions").child("amount")
             walletRef.addListenerForSingleValueEvent(object : ValueEventListener {
                 @SuppressLint("SetTextI18n")
                 override fun onDataChange(snapshot: DataSnapshot) {
