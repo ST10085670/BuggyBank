@@ -18,12 +18,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 
-/**
- * Fragment for creating a new category.
- *
- * This fragment will allow the user to input a name for the category and select whether it is an expense or income.
- * The category will be saved to the Firebase Realtime Database under the current user's UID.
- */
 private const val TAG = "CreateCategoryFragment"
 
 class CreateCategoryFragment : Fragment() {
@@ -104,7 +98,10 @@ class CreateCategoryFragment : Fragment() {
         categoryRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         categoryRecyclerView.adapter = categoryAdapter
         
-        addCategoryButton.setOnClickListener { addCategory() }
+        addCategoryButton.setOnClickListener {
+            addCategory()
+        typeRadioGroup.clearCheck() //clears selection of radio buttons
+        }
     }
     
     /**

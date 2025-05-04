@@ -72,8 +72,9 @@ class Sign_in : AppCompatActivity() {
             Log.d(TAG, "onClick: Forgot Password button clicked")
             startActivity(Intent(this, ForgotPasswordActivity::class.java))
         }
+
     }
-    
+
     private fun signInUser(email: String, password: String) {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
