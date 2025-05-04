@@ -6,10 +6,11 @@
     android:id="@+id/fragment_create_transaction"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     android:background="@drawable/background_app"
     android:fillViewport="true"
     android:scrollbars="vertical"
-    tools:context=".CreateTransactionFragment">
+    tools:context=".CreateTransactionFragment"
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/fragment_root"

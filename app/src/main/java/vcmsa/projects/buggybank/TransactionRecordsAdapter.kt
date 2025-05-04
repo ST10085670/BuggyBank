@@ -1,11 +1,13 @@
-package vcmsa.projects.buggybank
+package com.example.transactionrecords // You can change this to vcmsa.projects.buggybank if needed
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import vcmsa.projects.buggybank.R
+import vcmsa.projects.buggybank.Transaction
+
 
 class TransactionRecordsAdapter(private val transactions: List<Transaction>) :
     RecyclerView.Adapter<TransactionRecordsAdapter.TransactionViewHolder>() {
@@ -17,14 +19,13 @@ class TransactionRecordsAdapter(private val transactions: List<Transaction>) :
         val tvAmount: TextView = itemView.findViewById(R.id.tvAmount)
         val tvDate: TextView = itemView.findViewById(R.id.tvDate)
 
-        // Uncomment when you want to add the  expanded view of the transactions
-        //val tvTransactionType: TextView = itemView.findViewById(R.id.tvTransactionType)
-        //val tvDescription: TextView = itemView.findViewById(R.id.tvDescription)
-        //val tvStartDate: TextView = itemView.findViewById(R.id.tvExpStartDate)
-        //val tvEndDate: TextView = itemView.findViewById(R.id.tvExpEndDate)
+        // Uncomment when you want to add the expanded view of the transactions
+        // val tvTransactionType: TextView = itemView.findViewById(R.id.tvTransactionType)
+        // val tvDescription: TextView = itemView.findViewById(R.id.tvDescription)
+        // val tvStartDate: TextView = itemView.findViewById(R.id.tvExpStartDate)
+        // val tvEndDate: TextView = itemView.findViewById(R.id.tvExpEndDate)
 
         // Commented out the expanded layout stuff
-        // Uncomment when you want to add the  expanded view of the transactions
         // val expandedLayout: View = itemView.findViewById(R.id.cvExpandedTransaction)
     }
 
@@ -40,13 +41,13 @@ class TransactionRecordsAdapter(private val transactions: List<Transaction>) :
         holder.tvCategory.text = transaction.category
         holder.tvPaymentMethod.text = transaction.paymentMethod
         holder.tvAmount.text = transaction.amount.toString()
-        holder.tvDate.setText(transaction.dateOfTransaction.toString())
+        holder.tvDate.text = transaction.dateOfTransaction.toString()
 
-        // Uncomment when you want to add the  expanded view of the transactions
-        //holder.tvTransactionType.text = transaction.transactionType
-        //holder.tvDescription.text = transaction.description
-        //holder.tvStartDate.text = transaction.startTime.toString()
-        //holder.tvEndDate.text = transaction.endTime.toString()
+        // Uncomment when you want to add the expanded view of the transactions
+        // holder.tvTransactionType.text = transaction.transactionType
+        // holder.tvDescription.text = transaction.description
+        // holder.tvStartDate.text = transaction.startTime.toString()
+        // holder.tvEndDate.text = transaction.endTime.toString()
 
         // Commented out expanded view toggle
         /*
