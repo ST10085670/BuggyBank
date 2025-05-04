@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
->
+    android:gravity="center">
 
     <EditText
         android:id="@+id/etAmount"
@@ -34,9 +34,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
+        android:text="Convert"
         android:backgroundTint="@color/green"
         android:fontFamily="@font/chakra_petch_bold"
-        android:text="Convert"
         android:textSize="17dp"
         android:textColor="@color/black" />
 

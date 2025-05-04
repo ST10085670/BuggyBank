@@ -63,60 +63,65 @@ class CreateCategoryFragment : Fragment() {
 
         addCategoryButton.setOnClickListener {
             addCategory()
-        typeRadioGroup.clearCheck() //clears selection of radio buttons
+            typeRadioGroup.clearCheck() //clears selection of radio buttons
         }
-        
+
         // Ensure only one radio button is selected at a time
         typeRadioGroup.setOnCheckedChangeListener { group, checkedId ->
             group.check(checkedId)
-        
-       
+
+
+        }
     }
 
-    private fun addCategory() {
-        Log.d(TAG, "addCategory")
-        val name = categoryNameInput.text.toString().trim()
-        if (name.isEmpty()) {
-            Toast.makeText(requireContext(), "Please enter a category name.", Toast.LENGTH_SHORT)
-                .show()
-            return
-        }
-
-        val type = when {
-            expenseRadioButton.isChecked -> "Expense"
-            incomeRadioButton.isChecked -> "Income"
-            else -> {
+        private fun addCategory() {
+            Log.d(TAG, "addCategory")
+            val name = categoryNameInput.text.toString().trim()
+            if (name.isEmpty()) {
                 Toast.makeText(
                     requireContext(),
-                    "Please select Expense or Income.",
+                    "Please enter a category name.",
                     Toast.LENGTH_SHORT
-                ).show()
+                )
+                    .show()
                 return
             }
-        }
 
-        val user = FirebaseAuth.getInstance().currentUser ?: run {
-            Log.e(TAG, "No user logged in")
-            return
-        }
-
-        val categoryData = mapOf("name" to name, "type" to type)
-
-        database.child("categories").push().setValue(categoryData)
-            .addOnSuccessListener {
-                Log.d(TAG, "Saved under Users/${user.uid}/Category: $categoryData")
-                Toast.makeText(requireContext(), "Category added", Toast.LENGTH_SHORT).show()
-
-                val display = "$name ($type)"
-                categoryList.add(display)
-                categoryAdapter.notifyItemInserted(categoryList.size - 1)
-                categoryNameInput.text.clear()
-                typeRadioGroup.clearCheck()
+            val type = when {
+                expenseRadioButton.isChecked -> "Expense"
+                incomeRadioButton.isChecked -> "Income"
+                else -> {
+                    Toast.makeText(
+                        requireContext(),
+                        "Please select Expense or Income.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    return
+                }
             }
-            .addOnFailureListener { exception ->
-                Log.e(TAG, "Error adding category", exception)
-                Toast.makeText(requireContext(), "Failed to add category", Toast.LENGTH_SHORT)
-                    .show()
+
+            val user = FirebaseAuth.getInstance().currentUser ?: run {
+                Log.e(TAG, "No user logged in")
+                return
             }
+
+            val categoryData = mapOf("name" to name, "type" to type)
+
+            database.child("categories").push().setValue(categoryData)
+                .addOnSuccessListener {
+                    Log.d(TAG, "Saved under Users/${user.uid}/Category: $categoryData")
+                    Toast.makeText(requireContext(), "Category added", Toast.LENGTH_SHORT).show()
+
+                    val display = "$name ($type)"
+                    categoryList.add(display)
+                    categoryAdapter.notifyItemInserted(categoryList.size - 1)
+                    categoryNameInput.text.clear()
+                    typeRadioGroup.clearCheck()
+                }
+                .addOnFailureListener { exception ->
+                    Log.e(TAG, "Error adding category", exception)
+                    Toast.makeText(requireContext(), "Failed to add category", Toast.LENGTH_SHORT)
+                        .show()
+                }
+        }
     }
-}

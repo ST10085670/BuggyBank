@@ -104,7 +104,7 @@ class MenuBar : AppCompatActivity() {
                 R.id.is_currencyConvertor -> replaceFrag(FragCurrencyConvertor)
                 R.id.is_switchAccount -> Toast.makeText(this, "Switch account coming soon", Toast.LENGTH_LONG).show()
                 R.id.is_budgetBuddy -> Toast.makeText(this, "Budget buddy coming soon", Toast.LENGTH_LONG).show()
-                R.id.is_logut -> Toast.makeText(this, "You will be logged out", Toast.LENGTH_LONG).show()
+                R.id.is_logut -> replaceFrag(FragLogout)
             }
             drawerLayout.closeDrawer(GravityCompat.START)
             true

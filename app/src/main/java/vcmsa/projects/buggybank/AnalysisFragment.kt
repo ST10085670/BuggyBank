@@ -153,7 +153,7 @@ class AnalysisFragment : Fragment() {
         }
 
         val dataSet = BarDataSet(entries, "Transactions").apply {
-            color = Color.BLUE
+            color = Color.rgb(114,191,120)
         }
 
         val data = BarData(dataSet)
