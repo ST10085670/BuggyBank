@@ -10,17 +10,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
-import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
 import vcmsa.projects.buggybank.databinding.ActivitySignUpBinding
+import java.security.MessageDigest
 
 private const val TAG = "SignUpActivity"
 
@@ -63,7 +62,8 @@ class Sign_up : AppCompatActivity() {
             val email = binding.signUpEmail.text.toString()
             val password = binding.SignUpPassword.text.toString()
             val passwordConfirm = binding.SignUpPasswordConfirm.text.toString()
-
+            val username = binding.username.text.toString()
+            val hashedPassword = sha256(password).toString()
             if (email.isNotEmpty() && password.isNotEmpty() && passwordConfirm.isNotEmpty()) {
                 lifecycleScope.launch {
                     try {
@@ -71,6 +71,27 @@ class Sign_up : AppCompatActivity() {
                         val result = auth.createUserWithEmailAndPassword(email, password).await()
                         val user = result.user
                         if (user != null) {
+                            Log.d(TAG, "User created with UID: ${user.uid}")
+                            
+                            // Save user details to Firebase Realtime Database
+                            
+                            val db = FirebaseDatabase.getInstance()
+                            val usersRef = db.getReference("users")
+                            val userRef = usersRef.child(user.uid)
+                            userRef.child("details").setValue(null)
+                            userRef.child("details").child("username").setValue(username)
+                            userRef.child("signedIn").setValue(true)
+                            userRef.child("details").child("password").setValue(hashedPassword)
+                            userRef.child("details").child("email").setValue(email)
+                            userRef.child("transactions").setValue("null")
+                            userRef.child("categories").setValue("null")
+                            userRef.child("budgets").setValue("null")
+                            userRef.child("reports").setValue("null")
+                            
+                            val intent = Intent(this@Sign_up, Sign_in::class.java)
+                            startActivity(intent)
+                            finish()
+                            
                             Log.d(TAG, "Sign up successful")
                             Toast.makeText(
                                 this@Sign_up,
@@ -111,5 +132,24 @@ class Sign_up : AppCompatActivity() {
                 }
             }
         }
+    }
+    
+    private fun sha256(base: String): String {
+        try {
+            val digest = MessageDigest.getInstance("SHA-256")
+            val hash = digest.digest(base.toByteArray(charset("UTF-8")))
+            val hexString = StringBuffer()
+            
+            for (i in hash.indices) {
+                val hex = Integer.toHexString(0xff and hash[i].toInt())
+                if (hex.length == 1) hexString.append('0')
+                hexString.append(hex)
+            }
+            
+            return hexString.toString()
+        } catch (ex: java.lang.Exception) {
+            throw RuntimeException(ex)
+        }
+    
     }
 }
