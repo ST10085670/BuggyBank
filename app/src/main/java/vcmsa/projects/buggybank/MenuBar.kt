@@ -72,7 +72,6 @@ class MenuBar : AppCompatActivity() {
         //Bottom menu bar nav code
         val bottomBar = findViewById<BottomNavigationView>(R.id.NavBar)
 
-
         bottomBar.setOnItemSelectedListener {
             when (it.itemId) {
 
@@ -87,30 +86,25 @@ class MenuBar : AppCompatActivity() {
                 R.id.ic_trophies -> replaceFrag(FragDashboard)
             }
 
+            true
+        }
 
-            //Side nav menu bar code
-            navToggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
-            drawerLayout.addDrawerListener(navToggle)
-            navToggle.syncState()
+        //Side nav menu bar code
+        navToggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
+        drawerLayout.addDrawerListener(navToggle)
+        navToggle.syncState()
 
-            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-            sideNavView.setNavigationItemSelectedListener {
-                when (it.itemId) {
-                    R.id.is_setABudget -> replaceFrag(FragSetABudget)
-                    R.id.is_reports -> replaceFrag(FragReport)
-                    R.id.is_calculator -> replaceFrag(FragCalculator)
-                    R.id.is_currencyConvertor -> replaceFrag(FragCurrencyConvertor)
-                    R.id.is_switchAccount -> Toast.makeText(this, "Switch account coming soon", Toast.LENGTH_LONG).show()
-                    R.id.is_budgetBuddy -> Toast.makeText(this, "Budget buddy coming soon", Toast.LENGTH_LONG).show()
-                    R.id.is_logut -> replaceFrag(FragLogout)
-                }
-                drawerLayout.closeDrawer(GravityCompat.START)
-                true
-
-
-                R.id.is_logut -> Toast.makeText(this, "You will be logged out", Toast.LENGTH_LONG)
-                    .show()
+        sideNavView.setNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.is_setABudget -> replaceFrag(FragSetABudget)
+                R.id.is_reports -> replaceFrag(FragReport)
+                R.id.is_calculator -> replaceFrag(FragCalculator)
+                R.id.is_currencyConvertor -> replaceFrag(FragCurrencyConvertor)
+                R.id.is_switchAccount -> Toast.makeText(this, "Switch account coming soon", Toast.LENGTH_LONG).show()
+                R.id.is_budgetBuddy -> Toast.makeText(this, "Budget buddy coming soon", Toast.LENGTH_LONG).show()
+                R.id.is_logut -> Toast.makeText(this, "You will be logged out", Toast.LENGTH_LONG).show()
             }
             drawerLayout.closeDrawer(GravityCompat.START)
             true
