@@ -29,8 +29,8 @@ class AnalysisFragment : Fragment() {
             category = "Food",
             paymentMethod = "Card",
             amount = 1500.0,
-            dateOfTransaction = "2025-04-10",
-            transactionType = "Expense",
+            date = "2025-04-10",
+            type = "Expense",
             description = "Monthly groceries",
             startTime = "14:00",
             endTime = "14:30"
@@ -40,8 +40,8 @@ class AnalysisFragment : Fragment() {
             category = "Transport",
             paymentMethod = "Cash",
             amount = 150.0,
-            dateOfTransaction = "2025-04-03",
-            transactionType = "Expense",
+            date = "2025-04-03",
+            type = "Expense",
             description = "Bus fare for April",
             startTime = "09:00",
             endTime = "09:05"
@@ -51,8 +51,8 @@ class AnalysisFragment : Fragment() {
             category = "Health",
             paymentMethod = "Card",
             amount = 600.0,
-            dateOfTransaction = "2025-04-05",
-            transactionType = "Expense",
+            date = "2025-04-05",
+            type = "Expense",
             description = "Monthly gym",
             startTime = "10:00",
             endTime = "10:10"
@@ -62,8 +62,8 @@ class AnalysisFragment : Fragment() {
             category = "Entertainment",
             paymentMethod = "Card",
             amount = 270.0,
-            dateOfTransaction = "2025-04-15",
-            transactionType = "Expense",
+            date = "2025-04-15",
+            type = "Expense",
             description = "Cinema ticket",
             startTime = "18:00",
             endTime = "20:30"
@@ -73,8 +73,8 @@ class AnalysisFragment : Fragment() {
             category = "Work",
             paymentMethod = "Bank Transfer",
             amount = 20000.0,
-            dateOfTransaction = "2025-04-20",
-            transactionType = "Income",
+            date = "2025-04-20",
+            type = "Income",
             description = "App development job",
             startTime = "09:00",
             endTime = "17:00"
@@ -84,8 +84,8 @@ class AnalysisFragment : Fragment() {
             category = "Personal",
             paymentMethod = "Cash",
             amount = 300.0,
-            dateOfTransaction = "2025-04-01",
-            transactionType = "Income",
+            date = "2025-04-01",
+            type = "Income",
             description = "Monthly allowance from family",
             startTime = "08:00",
             endTime = "08:10"
@@ -177,7 +177,7 @@ class AnalysisFragment : Fragment() {
         var totalExpenses = 0.00
 
         for (transaction in dummyTransactions) {
-            if (transaction.transactionType == "Expense") {
+            if (transaction.type == "Expense") {
                 expensesByCategory[transaction.title] =
                     expensesByCategory.getOrDefault(transaction.title, 0.00) + transaction.amount
                 totalExpenses += transaction.amount
