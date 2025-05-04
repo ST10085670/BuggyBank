@@ -2,14 +2,23 @@ package vcmsa.projects.buggybank
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import androidx.fragment.app.Fragment
+
+import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -23,11 +32,6 @@ private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 private const val TAG = "MainPageFragment"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [MainPageFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class MainPageFragment : Fragment() {
     // Fragment arguments
     private var param1: String? = null
@@ -36,6 +40,8 @@ class MainPageFragment : Fragment() {
     private var _binding: FragmentMainPageBinding? = null
     // Convenience property to access the binding
     private val binding get() = _binding!!
+    //chart variable
+    private lateinit var chart: BarChart
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +50,7 @@ class MainPageFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+
         Log.d(TAG, "onCreate: PARAM1: $param1, PARAM2: $param2")
     }
 
@@ -52,6 +59,7 @@ class MainPageFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View? {
         // Inflate the fragment layout
+
         _binding = FragmentMainPageBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -64,7 +72,14 @@ class MainPageFragment : Fragment() {
         val db = FirebaseDatabase.getInstance()
         // Get the text view for the username
         val textViewUserName = _binding?.mainText
+
         val vAmount = _binding?.walletAmount
+
+        // Initialize chart
+        chart = binding.statusBar
+
+        // Load the chart data from Firebase
+        loadChartData()
 
         // If the user is logged in, get the username from the database
         user?.let {
@@ -154,4 +169,68 @@ class MainPageFragment : Fragment() {
         // Clear the binding when the fragment is destroyed
         _binding = null
     }
+
+    private fun loadChartData() {
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser == null) {
+            Log.e("Firebase", "User not logged in.")
+            return
+        }
+
+        val userId = currentUser.uid
+        val transactionsRef = FirebaseDatabase.getInstance().getReference("users/$userId/transactions")
+
+        transactionsRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val transactionData = mutableMapOf<String, Float>()
+
+                for (transactionSnapshot in snapshot.children) {
+                    val title = transactionSnapshot.child("title").getValue(String::class.java)
+                    val amount = transactionSnapshot.child("amount").getValue(Float::class.java)
+
+                    if (!title.isNullOrBlank() && amount != null) {
+                        transactionData[title] = amount
+                    }
+                }
+
+                if (transactionData.isEmpty()) {
+                    Log.w("Firebase", "No transactions found.")
+                } else {
+                    showChart(transactionData)
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("Firebase", "Database error: ${error.message}")
+            }
+        })
+    }
+
+    private fun showChart(transactions: Map<String, Float>) {
+        val entries = ArrayList<BarEntry>()
+        val labels = transactions.keys.toList()
+
+        for ((index, title) in labels.withIndex()) {
+            entries.add(BarEntry(index.toFloat(), transactions[title] ?: 0f))
+        }
+
+        val dataSet = BarDataSet(entries, "Transactions").apply {
+            color = Color.BLUE
+        }
+
+        val data = BarData(dataSet)
+        data.barWidth = 0.9f
+
+        chart.data = data
+        chart.setFitBars(true)
+
+        chart.xAxis.valueFormatter = IndexAxisValueFormatter(labels)
+        chart.xAxis.granularity = 1f
+        chart.xAxis.setDrawGridLines(false)
+        chart.axisLeft.setDrawGridLines(false)
+        chart.axisRight.isEnabled = false
+        chart.description.isEnabled = false
+        chart.invalidate()
+    }
+    
 }

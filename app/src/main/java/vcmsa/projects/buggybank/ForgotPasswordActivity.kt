@@ -2,9 +2,16 @@ package vcmsa.projects.buggybank
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.view.View
+import android.view.animation.AnimationUtils
+import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.auth.FirebaseAuth
@@ -14,6 +21,8 @@ class ForgotPasswordActivity : AppCompatActivity() {
     
     private lateinit var binding: ActivityForgotPasswordBinding
     private lateinit var auth: FirebaseAuth
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityForgotPasswordBinding.inflate(layoutInflater)
@@ -55,5 +64,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
                 }
             }
         }
+
     }
+
 }

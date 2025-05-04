@@ -77,8 +77,9 @@ class Sign_in : AppCompatActivity() {
             startActivity(Intent(this, ForgotPasswordActivity::class.java))
             finish()
         }
+
     }
-    
+
     private fun signInUser(email: String, password: String) {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
