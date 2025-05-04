@@ -9,42 +9,12 @@
     android:padding="16dp">
 
 
-    <ImageView
-        android:id="@+id/main_image"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_gravity="center"
-        android:layout_margin="20sp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="28dp"
-        android:layout_weight="1"
-        android:background="@drawable/menu"
-        android:importantForAccessibility="yes"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/main_logo"
-        android:layout_width="41dp"
-        android:layout_height="45dp"
-        android:layout_gravity="center"
-        android:layout_margin="10sp"
-        android:layout_marginStart="17dp"
-        android:layout_marginTop="16dp"
-        android:layout_weight="1"
-        android:background="@drawable/logo"
-        android:importantForAccessibility="yes"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.062"
-        app:layout_constraintStart_toEndOf="@+id/main_image"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Create A Category"
-        android:textSize="20sp"
+        android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -53,17 +23,21 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.123" />
 
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/categoryRecyclerView"
-        android:layout_width="250dp"
-        android:layout_height="300dp"
+        android:layout_width="255dp"
+        android:layout_height="229dp"
+        android:background="@drawable/bg_dashed_border"
+        android:paddingStart="10sp"
+        android:paddingTop="10sp"
+        android:paddingBottom="10sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.282" />
+
     <TextView
         android:id="@+id/labelName"
         android:layout_width="wrap_content"
@@ -74,7 +48,7 @@
         android:textSize="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.106"
+        app:layout_constraintHorizontal_bias="0.143"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.642" />
@@ -82,16 +56,19 @@
     <EditText
         android:id="@+id/categoryNameInput"
         android:layout_width="197dp"
-        android:layout_height="61dp"
+        android:layout_height="50dp"
         android:layout_marginStart="68dp"
+        android:background="@drawable/vector_textbox"
         android:hint="Enter category name"
         android:minHeight="48dp"
+        android:paddingStart="10sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.631" />
+
     <TextView
         android:id="@+id/labelType"
         android:layout_width="wrap_content"
@@ -149,17 +126,17 @@
 
     <Button
         android:id="@+id/addCategoryButton"
-        android:layout_width="wrap_content"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="104dp"
+        android:backgroundTint="@color/dark_green"
         android:text="Add"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.454"
-
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.995" />
+        app:layout_constraintVertical_bias="1.0" />
 
-
+    
 </androidx.constraintlayout.widget.ConstraintLayout>

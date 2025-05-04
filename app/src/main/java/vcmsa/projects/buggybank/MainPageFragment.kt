@@ -1,17 +1,24 @@
 package vcmsa.projects.buggybank
 
+import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
+import androidx.fragment.app.Fragment
+
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -35,7 +42,7 @@ class MainPageFragment : Fragment() {
     private val binding get() = _binding!!
     //chart variable
     private lateinit var chart: BarChart
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Get the fragment arguments
@@ -46,7 +53,7 @@ class MainPageFragment : Fragment() {
 
         Log.d(TAG, "onCreate: PARAM1: $param1, PARAM2: $param2")
     }
-    
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -56,7 +63,7 @@ class MainPageFragment : Fragment() {
         _binding = FragmentMainPageBinding.inflate(inflater, container, false)
         return binding.root
     }
-    
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(TAG, "onViewCreated")
@@ -66,37 +73,96 @@ class MainPageFragment : Fragment() {
         // Get the text view for the username
         val textViewUserName = _binding?.mainText
 
+        val vAmount = _binding?.walletAmount
+
         // Initialize chart
         chart = binding.statusBar
 
         // Load the chart data from Firebase
         loadChartData()
+
         // If the user is logged in, get the username from the database
         user?.let {
             val userId = it.uid
-            val userRef = db.getReference("users").child(userId).child("username")
-            
+            val userRef = db.getReference("users").child(userId).child("details").child("username")
+
             // Add a listener to get the username from the database
             userRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                @SuppressLint("SetTextI18n")
                 override fun onDataChange(snapshot: DataSnapshot) {
                     Log.d(TAG, "onDataChange: snapshot: $snapshot")
                     // Get the username from the snapshot
                     val userName = snapshot.getValue<String>()
                     // Set the username text view
-                    textViewUserName?.text = (userName ?: "No name found").toString()
+                    textViewUserName?.text = "Welcome " + (userName ?: "No name found").toString()
                 }
-                
+
                 override fun onCancelled(error: DatabaseError) {
                     Log.e(TAG, "onCancelled: $error")
                     // Set the username text view to an error message if the database call fails
                     textViewUserName?.text = "Error fetching user data"
                 }
             })
+
+            val walletRef = db.getReference("users").child(userId).child("transactions").child("amount")
+            walletRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                @SuppressLint("SetTextI18n")
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    Log.d(TAG, "onDataChange: snapshot: $snapshot")
+                    // Get the username from the snapshot
+                    val walletAmount = snapshot.getValue<String>()
+                    // Set the username text view
+                    vAmount?.text = "Wallet: " + (walletAmount ?: "No amount found").toString()
+                }
+
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e(TAG, "onCancelled: $error")
+                    // Set the username text view to an error message if the database call fails
+                    vAmount?.text = "Error fetching user data"
+                }
+            })
         }
 
         Log.d(TAG, "onViewCreated: user: $user")
+
+        val buttonClickAnimation = AlphaAnimation(1f, 0.5f).apply {
+            duration = 200
+            repeatMode = Animation.REVERSE
+            repeatCount = 1
+        }
+
+        binding.addTransaction.setOnClickListener {
+            it.startAnimation(buttonClickAnimation)
+            Log.d(TAG, "onClick: Going to create transaction page")
+            val transaction = parentFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragmentContainerView, CreateTransactionFragment())
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
+
+        binding.viewTransition.setOnClickListener {
+            it.startAnimation(buttonClickAnimation)
+            Log.d(TAG, "onClick: Going to view transaction page")
+            val transaction = parentFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragmentContainerView, TransactionRecords())
+            transaction.addToBackStack(null)
+            transaction.commit()
+           
+        }
+
+        binding.viewReport.setOnClickListener {
+            it.startAnimation(buttonClickAnimation)
+            Log.d(TAG, "onClick: Going to view report page")
+            val transaction = parentFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragmentContainerView, ReportFragment())
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
     }
+
     
+
     override fun onDestroyView() {
         super.onDestroyView()
         Log.d(TAG, "onDestroyView")

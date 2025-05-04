@@ -46,6 +46,7 @@ class Sign_in : AppCompatActivity() {
         binding.SignInRegister.setOnClickListener {
             Log.d(TAG, "onClick: Register button clicked")
             startActivity(Intent(this, Sign_up::class.java))
+            finish()
         }
         
         binding.SignInButton.setOnClickListener {
@@ -61,9 +62,12 @@ class Sign_in : AppCompatActivity() {
                 !Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
                     Toast.makeText(this, "Please enter a valid email", Toast.LENGTH_SHORT).show()
                     Log.w(TAG, "Validation failed: invalid email format")
+                    
+                    
                 }
                 else -> {
                     signInUser(email, password)
+                    Log.d(TAG, "Validation passed, attempting sign-in")
                 }
             }
         }
@@ -71,6 +75,7 @@ class Sign_in : AppCompatActivity() {
         binding.vForgotPassword.setOnClickListener {
             Log.d(TAG, "onClick: Forgot Password button clicked")
             startActivity(Intent(this, ForgotPasswordActivity::class.java))
+            finish()
         }
 
     }
