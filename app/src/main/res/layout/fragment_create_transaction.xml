@@ -10,7 +10,7 @@
     android:background="@drawable/background_app"
     android:fillViewport="true"
     android:scrollbars="vertical"
-    tools:context=".CreateTransactionFragment"
+    tools:context=".CreateTransactionFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/fragment_root"
