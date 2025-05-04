@@ -1,76 +1,196 @@
 package vcmsa.projects.buggybank
 
+import android.content.Intent
+import android.graphics.Paint
+import android.graphics.pdf.PdfDocument
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.Button
-import android.widget.ListView
+import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.FileProvider
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
-
-private lateinit var rvReportList: MutableList<Transaction>
-private lateinit var transactionAdapter: ArrayAdapter<String> // For display
-private lateinit var listView: ListView
-
+import com.google.firebase.database.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import vcmsa.projects.buggybank.databinding.FragmentReportBinding
+import com.example.transactionrecords.TransactionRecordsAdapter
+import java.io.File
+import java.io.FileOutputStream
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 class ReportFragment : Fragment() {
+
+    private lateinit var binding: FragmentReportBinding
+    private lateinit var adapter: TransactionRecordsAdapter
+    private lateinit var userReference: DatabaseReference
+    private val transactions = ArrayList<Transaction>()
+    private val TAG = "TransactionRecords"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val view = inflater.inflate(R.layout.fragment_report, container, false)
+        binding = FragmentReportBinding.inflate(inflater, container, false)
 
-        listView = view.findViewById(R.id.rvReportList)
-        rvReportList = mutableListOf()
+        adapter = TransactionRecordsAdapter(transactions)
+        binding.rvTransactions.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvTransactions.adapter = adapter
 
-        // Firebase auth & db
-        val user = FirebaseAuth.getInstance().currentUser
-        if (user != null) {
-            val userId = user.uid
-            val dbRef = FirebaseDatabase.getInstance().getReference("transactions").child(userId)
-
-
-            dbRef.addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    rvReportList.clear()
-                    for (txSnapshot in snapshot.children) {
-                        val tx = txSnapshot.getValue(Transaction::class.java)
-                        tx?.let { rvReportList.add(it) }
-                    }
-
-                    val listItems =
-                        rvReportList.map { "${it.dateOfTransaction} - ${it.description} - R${it.amount}" }
-                    transactionAdapter = ArrayAdapter(
-                        requireContext(),
-                        android.R.layout.simple_list_item_1,
-                        listItems
-                    )
-                    listView.adapter = transactionAdapter
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    if (isAdded && context != null){
-                        Toast.makeText(context, "Error loading data", Toast.LENGTH_SHORT).show()
-                    }
-                    else{
-                        Log.e("ReportFragment", "Fragment is not attached or context is null")
-                    }
-                }
-            })
-        } else {
-            Toast.makeText(context, "No user logged in", Toast.LENGTH_SHORT).show()
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        if (userId == null) {
+            Log.e(TAG, "User not logged in")
+            binding.tvNoTransactions.visibility = View.VISIBLE
+            return binding.root
         }
-        return view
+
+        userReference = FirebaseDatabase.getInstance()
+            .getReference("users")
+            .child(userId)
+            .child("transactions")
+
+        binding.btnDownloadPDF.setOnClickListener {
+            createPDF(transactions)
+        }
+
+        fetchTransactionsFromFirebase()
+
+        return binding.root
     }
 
+    private fun fetchTransactionsFromFirebase() {
+        lifecycleScope.launch {
+            try {
+                val snapshot = withContext(Dispatchers.IO) {
+                    suspendCoroutine<DataSnapshot> { continuation ->
+                        userReference.addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                continuation.resume(dataSnapshot)
+                            }
+
+                            override fun onCancelled(databaseError: DatabaseError) {
+                                continuation.resumeWithException(databaseError.toException())
+                            }
+                        })
+                    }
+                }
+
+                transactions.clear()
+                for (snapshot1 in snapshot.children) {
+                    val transaction = snapshot1.getValue(Transaction::class.java)
+                    if (transaction != null) {
+                        transactions.add(transaction)
+                    }
+                }
+
+                adapter.notifyDataSetChanged()
+                if (transactions.isEmpty()) {
+                    binding.tvNoTransactions.visibility = View.VISIBLE
+                }
+
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to Fetch Transactions", e)
+                binding.tvNoTransactions.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private fun createPDF(transactions: List<Transaction>) {
+        val pdfDocument = PdfDocument()
+
+        // Set the page size to A4 landscape (landscape width is 842 and height is 595)
+        val pageInfo = PdfDocument.PageInfo.Builder(842, 595, 1).create()
+        val page = pdfDocument.startPage(pageInfo)
+        val canvas = page.canvas
+        val paint = Paint().apply {
+            textSize = 10f
+            isFakeBoldText = true
+        }
+
+        var y = 40f
+        val xStart = 20f
+
+        // Draw Header
+        canvas.drawText("BuggyBank - Transaction Report", xStart, y, paint)
+        y += 30
+
+        // Draw Column Titles
+        val headers = listOf("Title", "Category", "Payment", "Amount", "Date", "Type", "Start", "End", "Desc")
+        val columnWidths = listOf(80, 80, 80, 70, 80, 70, 70, 70, 100) // Adjusted column widths for landscape
+        var x = xStart
+        headers.forEachIndexed { index, title ->
+            canvas.drawText(title, x, y, paint)
+            x += columnWidths[index]
+        }
+
+        y += 20
+        paint.isFakeBoldText = false // normal text for rows
+
+        // Draw Rows
+        transactions.forEach {
+            x = xStart
+            val rowValues = listOf(
+                it.title,
+                it.category,
+                it.paymentMethod,
+                "R${"%.2f".format(it.amount)}",
+                it.dateOfTransaction,
+                it.transactionType,
+                it.startTime,
+                it.endTime,
+                it.description
+            )
+            rowValues.forEachIndexed { index, value ->
+                val text = if (value.length > 10) value.take(10) + "…" else value
+                canvas.drawText(text, x, y, paint)
+                x += columnWidths[index]
+            }
+            y += 20
+        }
+
+        pdfDocument.finishPage(page)
+
+        // Save and open file
+        val docsFolder = requireContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
+        if (docsFolder != null && !docsFolder.exists()) {
+            docsFolder.mkdirs()
+        }
+
+        val file = File(docsFolder, "Report.pdf")
+
+        try {
+            pdfDocument.writeTo(FileOutputStream(file))
+            pdfDocument.close()
+
+            Toast.makeText(context, "PDF saved: ${file.absolutePath}", Toast.LENGTH_LONG).show()
+
+            val uri: Uri = FileProvider.getUriForFile(
+                requireContext(),
+                "${requireContext().packageName}.provider",
+                file
+            )
+
+            val openIntent = Intent(Intent.ACTION_VIEW)
+            openIntent.setDataAndType(uri, "application/pdf")
+            openIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            startActivity(openIntent)
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(context, "Error saving PDF: ${e.message}", Toast.LENGTH_LONG).show()
+        }
+    }
 
 }

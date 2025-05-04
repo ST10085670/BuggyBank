@@ -2,194 +2,183 @@ package vcmsa.projects.buggybank
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
+import android.view.animation.AnimationUtils
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
-import kotlinx.coroutines.Dispatchers
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
 import vcmsa.projects.buggybank.databinding.ActivitySignUpBinding
 import java.security.MessageDigest
 
+private const val TAG = "SignUpActivity"
 
+@Suppress("DEPRECATION")
 class Sign_up : AppCompatActivity() {
-    
-    private val TAG = "SignUp"
+
     private lateinit var auth: FirebaseAuth
     private lateinit var binding: ActivitySignUpBinding
-    private lateinit var databaseReference: DatabaseReference
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        auth = FirebaseAuth.getInstance()
-        databaseReference = FirebaseDatabase.getInstance().reference
+        auth = Firebase.auth
+
+        // Window insets for edge-to-edge content
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.signupPage)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        
+
+        // Apply fade in animation to the entire layout
+        val fadeInAnimation = AnimationUtils.loadAnimation(this, android.R.anim.fade_in)
+        binding.root.startAnimation(fadeInAnimation)
+
+        // Handle back button press
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                Log.d(TAG, "onBackPressed: Going to sign in page")
+                val intent = Intent(this@Sign_up, Sign_in::class.java)
+                startActivity(intent)
+                overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+                finish()
+            }
+        })
+
+        // Go to sign in page when login button clicked
         binding.SignUpLogin.setOnClickListener {
-            // Go to sign in page
+            Log.d(TAG, "onClick: Going to sign in page")
             val intent = Intent(this@Sign_up, Sign_in::class.java)
             startActivity(intent)
+            overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+            finish()
         }
+
+        // Text change listener to expand text fields
+        val textWatcher = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                binding.signUpEmail.isSingleLine = false
+                binding.SignUpPassword.isSingleLine = false
+                binding.SignUpPasswordConfirm.isSingleLine = false
+                binding.username.isSingleLine = false
+            }
+        }
+        binding.signUpEmail.addTextChangedListener(textWatcher)
+        binding.SignUpPassword.addTextChangedListener(textWatcher)
+        binding.SignUpPasswordConfirm.addTextChangedListener(textWatcher)
+        binding.username.addTextChangedListener(textWatcher)
+
+        // Toggle password visibility
+        binding.SignUpPassword.transformationMethod = android.text.method.PasswordTransformationMethod.getInstance()
+        binding.SignUpPasswordConfirm.transformationMethod = android.text.method.PasswordTransformationMethod.getInstance()
+
+        // Sign up button click listener
         binding.SignUpButton.setOnClickListener {
             val email = binding.signUpEmail.text.toString()
             val password = binding.SignUpPassword.text.toString()
             val passwordConfirm = binding.SignUpPasswordConfirm.text.toString()
             val username = binding.username.text.toString()
-            
+            val hashedPassword = sha256(password).toString()
             if (email.isNotEmpty() && password.isNotEmpty() && passwordConfirm.isNotEmpty()) {
-                
-                // Check if the user has filled in all fields
-                if (email.isEmpty() || password.isEmpty() || passwordConfirm.isEmpty()) {
-                    Log.d(TAG, "Please fill in all fields")
-                    Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
-                    return@setOnClickListener
-                }
-                
-                // Check if the email is valid
-                if (!email.contains("@")) {
-                    Log.d(TAG, "Email must contain @")
-                    Toast.makeText(this, "Email must contain @", Toast.LENGTH_SHORT).show()
-                    return@setOnClickListener
-                }
-                
-                // Check if the password is valid
-                if (!password.any { it in "@#\$%^&*!`~-_=+}][{\\|':;<>,./?" }) {
-                    Log.d(TAG, "Password must contain at least one special character")
-                    Toast.makeText(
-                        this,
-                        "Password must contain at least one special character",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    return@setOnClickListener
-                }
-                if (!password.any { it.isDigit() }) {
-                    Log.d(TAG, "Password must contain at least one number")
-                    Toast.makeText(
-                        this,
-                        "Password must contain at least one number",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    return@setOnClickListener
-                }
-                if (!password.any { it.isUpperCase() }) {
-                    Log.d(TAG, "Password must contain at least one uppercase letter")
-                    Toast.makeText(
-                        this,
-                        "Password must contain at least one uppercase letter",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    return@setOnClickListener
-                }
-                if (password != passwordConfirm) {
-                    Log.d(TAG, "Passwords do not match")
-                    Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show()
-                    return@setOnClickListener
-                }
-                
-                // Create user in Firebase Authentication
                 lifecycleScope.launch {
                     try {
                         Log.d(TAG, "Creating user with email: $email and password: $password")
-                        auth.createUserWithEmailAndPassword(email, password).await()
-                        withContext(Dispatchers.Main) {
+                        val result = auth.createUserWithEmailAndPassword(email, password).await()
+                        val user = result.user
+                        if (user != null) {
+                            Log.d(TAG, "User created with UID: ${user.uid}")
+
+                            // Save user details to Firebase Realtime Database
+                            val db = FirebaseDatabase.getInstance()
+                            val usersRef = db.getReference("users")
+                            val userRef = usersRef.child(user.uid)
+                            userRef.child("details").setValue(null)
+                            userRef.child("details").child("username").setValue(username)
+                            userRef.child("signedIn").setValue(true)
+                            userRef.child("details").child("password").setValue(hashedPassword)
+                            userRef.child("details").child("email").setValue(email)
+                            userRef.child("transactions").setValue("null")
+                            userRef.child("categories").setValue("null")
+                            userRef.child("budgets").setValue("null")
+                            userRef.child("reports").setValue("null")
+
+                            val intent = Intent(this@Sign_up, Sign_in::class.java)
+                            startActivity(intent)
+                            overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+                            finish()
+
                             Log.d(TAG, "Sign up successful")
                             Toast.makeText(
                                 this@Sign_up,
                                 "Sign up successful",
                                 Toast.LENGTH_LONG
                             ).show()
-                            
-                            // Get the current user
-                            val user = auth.currentUser
-                            
-                            val hashedPassword = sha256(password)
-                            
-                            // Create a reference to the user's node in the database
-                            val userReference = databaseReference.child("users").child(user!!.uid)
-                            
-                            // Add the user's details to the database
-                            Log.d(TAG, "Storing user details in database")
-                            userReference.child("username").setValue(username)
-                            userReference.child("email").setValue(email)
-                            
-                            
-                            
-                            userReference.child("password").setValue(hashedPassword)
-                            
-                            // Check if data was stored by getting the snapshot
-                            val snapshot = userReference.child("username").get().await()
-                            if (snapshot.exists()) {
-                                Log.d(TAG, "Data stored successfully")
-                                Toast.makeText(
-                                    this@Sign_up,
-                                    "Data stored successfully",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            } else {
-                                Log.d(TAG, "Data not stored")
-                                Toast.makeText(
-                                    this@Sign_up,
-                                    "Data not stored",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                            
-                            // Clear the input fields
-                            binding.signUpEmail.text.clear()
-                            binding.SignUpPassword.text?.clear()
-                            binding.SignUpPasswordConfirm.text?.clear()
-                            binding.username.text.clear()
-                            
-                            startActivity(Intent(this@Sign_up, Sign_in::class.java))
-                        }
-                    } catch (e: Exception) {
-                        withContext(Dispatchers.Main) {
-                            // Clear the input fields
-                            binding.signUpEmail.text.clear()
-                            binding.SignUpPassword.text?.clear()
-                            binding.SignUpPasswordConfirm.text?.clear()
-                            binding.username.text.clear()
-                            Log.d(TAG, "Sign up failed: ${e.message}")
+                            finish()
+                        } else {
+                            Log.d(TAG, "Sign up failed")
                             Toast.makeText(
                                 this@Sign_up,
-                                "Sign up failed: ${e.message}",
-                                Toast.LENGTH_LONG
+                                "Sign up failed",
+                                Toast.LENGTH_SHORT
                             ).show()
-                            
                         }
+                    } catch (e: FirebaseAuthWeakPasswordException) {
+                        Log.d(TAG, "Password is too weak")
+                        Toast.makeText(
+                            this@Sign_up,
+                            "Password is too weak",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } catch (e: FirebaseAuthUserCollisionException) {
+                        Log.d(TAG, "Email already in use")
+                        Toast.makeText(
+                            this@Sign_up,
+                            "Email already in use",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } catch (e: Exception) {
+                        Log.d(TAG, "Sign up failed: ${e.message}")
+                        Toast.makeText(
+                            this@Sign_up,
+                            "Sign up failed: ${e.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
-                    
                 }
             }
         }
     }
-    fun sha256(base: String): String {
+
+    private fun sha256(base: String): String {
         try {
             val digest = MessageDigest.getInstance("SHA-256")
             val hash = digest.digest(base.toByteArray(charset("UTF-8")))
             val hexString = StringBuffer()
-            
+
             for (i in hash.indices) {
                 val hex = Integer.toHexString(0xff and hash[i].toInt())
                 if (hex.length == 1) hexString.append('0')
                 hexString.append(hex)
             }
-            
+
             return hexString.toString()
         } catch (ex: java.lang.Exception) {
             throw RuntimeException(ex)
