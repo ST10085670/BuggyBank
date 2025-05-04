@@ -5,7 +5,6 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -111,7 +110,7 @@ class CreateTransactionFragment : Fragment() {
         val amount = etAmount.text.toString().toDoubleOrNull() ?: 0.0
         val category = spCategory.selectedItem as String
         val payment = spPayment.selectedItem as String
-        val date = etDate.text.toString()
+        val dateOfTransaction = etDate.text.toString()
         val start = etStartTime.text.toString()
         val end = etEndTime.text.toString()
         val desc = etDescription.text.toString().trim()
@@ -120,11 +119,11 @@ class CreateTransactionFragment : Fragment() {
             Toast.makeText(requireContext(), "Invalid selection", Toast.LENGTH_SHORT).show()
             return
         }
-        if (title.isEmpty() || amount <= 0.0 || date.isEmpty()) {
+        if (title.isEmpty() || amount <= 0.0 || dateOfTransaction.isEmpty()) {
             Toast.makeText(requireContext(), "Please fill Title, Amount & Date", Toast.LENGTH_SHORT).show()
             return
         }
-        val transaction = Expense(title, type, amount, category, payment, date, start, end, desc, imageUri?.toString())
+        val transaction = Expense(title, type, amount, category, payment, dateOfTransaction, start, end, desc, imageUri?.toString())
         
         val uid = FirebaseAuth.getInstance().currentUser?.uid
         if (uid == null) {

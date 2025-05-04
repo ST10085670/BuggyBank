@@ -22,7 +22,7 @@ class ReportAdapter(private val transactions: List<Transaction>) :
     override fun onBindViewHolder(holder: ReportViewHolder, position: Int) {
         val transaction = transactions[position]
         holder.textView.text =
-            "${transaction.dateOfTransaction} - ${transaction.description} - R${transaction.amount}"
+            "${transaction.date} - ${transaction.description} - R${transaction.amount}"
     }
 
     override fun getItemCount() = transactions.size

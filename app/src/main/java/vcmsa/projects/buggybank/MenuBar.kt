@@ -7,7 +7,9 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.view.MenuItem
+import android.widget.ImageButton
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -18,11 +20,8 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import com.google.android.material.navigation.NavigationView
 import java.io.File
@@ -66,6 +65,15 @@ class MenuBar : AppCompatActivity() {
 
         replaceFrag(FragDashboard)
 
+        val btnBack = findViewById<ImageButton>(R.id.btnBack)
+        btnBack.setOnClickListener {
+            if (supportFragmentManager.backStackEntryCount > 0) {
+                supportFragmentManager.popBackStack()
+            } else {
+                finish()
+            }
+        }
+
         sideNavView.bringToFront()
         drawerLayout.requestLayout()
 
@@ -73,6 +81,7 @@ class MenuBar : AppCompatActivity() {
         val bottomBar = findViewById<BottomNavigationView>(R.id.NavBar)
 
 
+        // navigation for bottom nav bar
         bottomBar.setOnItemSelectedListener {
             when (it.itemId) {
 
@@ -87,49 +96,46 @@ class MenuBar : AppCompatActivity() {
                 R.id.ic_trophies -> replaceFrag(FragDashboard)
             }
 
+            true
+        }
 
-            //Side nav menu bar code
-            navToggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
-            drawerLayout.addDrawerListener(navToggle)
-            navToggle.syncState()
+        //Side nav menu bar code
+        navToggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
+        drawerLayout.addDrawerListener(navToggle)
+        navToggle.syncState()
 
-            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-            sideNavView.setNavigationItemSelectedListener {
-                when (it.itemId) {
-                    R.id.is_setABudget -> replaceFrag(FragSetABudget)
-                    R.id.is_reports -> replaceFrag(FragReport)
-                    R.id.is_calculator -> replaceFrag(FragCalculator)
-                    R.id.is_currencyConvertor -> replaceFrag(FragCurrencyConvertor)
-                    R.id.is_switchAccount -> Toast.makeText(this, "Switch account coming soon", Toast.LENGTH_LONG).show()
-                    R.id.is_budgetBuddy -> Toast.makeText(this, "Budget buddy coming soon", Toast.LENGTH_LONG).show()
-                    R.id.is_logut -> replaceFrag(FragLogout)
-                }
-                drawerLayout.closeDrawer(GravityCompat.START)
-                true
-
-
-                R.id.is_logut -> Toast.makeText(this, "You will be logged out", Toast.LENGTH_LONG)
-                    .show()
+        sideNavView.setNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.is_setABudget -> replaceFrag(FragSetABudget)
+                R.id.is_reports -> replaceFrag(FragReport)
+                R.id.is_calculator -> replaceFrag(FragCalculator)
+                R.id.is_currencyConvertor -> replaceFrag(FragCurrencyConvertor)
+                R.id.is_switchAccount -> Toast.makeText(this, "Switch account coming soon", Toast.LENGTH_LONG).show()
+                R.id.is_budgetBuddy -> Toast.makeText(this, "Budget buddy coming soon", Toast.LENGTH_LONG).show()
+                R.id.is_logut -> Toast.makeText(this, "You will be logged out", Toast.LENGTH_LONG).show()
             }
             drawerLayout.closeDrawer(GravityCompat.START)
             true
 
         }
 
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                val drawerLayout: DrawerLayout = findViewById(R.id.drawerLayout)
+                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                } else if (supportFragmentManager.backStackEntryCount > 0) {
+                    supportFragmentManager.popBackStack()
+                } else {
+                    // If you want the app to exit here, call finish()
+                    finish()
+                }
+            }
+        })
 
     }
-    override fun onBackPressed() {
-        val drawerLayout: DrawerLayout = findViewById(R.id.drawerLayout)
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START)
-        } else if (supportFragmentManager.backStackEntryCount > 0) {
-            supportFragmentManager.popBackStack()
-        } else {
-            super.onBackPressed()
-        }
-    }
-
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return if (navToggle.onOptionsItemSelected(item)) {
@@ -137,12 +143,17 @@ class MenuBar : AppCompatActivity() {
         } else super.onOptionsItemSelected(item)
     }
 
-
     private fun replaceFrag(fragment: Fragment) {
+        val currentFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView)
+
+        //ensures that we don't load the same page multiple times and filling the backstack with the same page
+        if (currentFragment != null && currentFragment::class == fragment::class) return
+
         val transaction = supportFragmentManager.beginTransaction()
         lifecycleScope.launch {
-            transaction.replace(R.id.fragmentContainerView, fragment).addToBackStack(null)
-            transaction.commit()
+            transaction.replace(R.id.fragmentContainerView, fragment)
+                .addToBackStack(null) // Adds new  page to the back stack
+                .commit()
         }
     }
 
@@ -161,7 +172,7 @@ class MenuBar : AppCompatActivity() {
         //loop each transaction within db
         transactions.forEach {
             canvas.drawText(
-                "${it.dateOfTransaction}: ${it.description} - R${it.amount}",
+                "${it.date}: ${it.description} - R${it.amount}",
                 10f,
                 y,
                 paint
