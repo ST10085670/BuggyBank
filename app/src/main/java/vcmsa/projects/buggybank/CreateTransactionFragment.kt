@@ -80,19 +80,19 @@ class CreateTransactionFragment : Fragment() {
         spType.adapter = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_spinner_dropdown_item,
-            listOf("Select Type", "Expense", "Income")
+            listOf("Select", "Expense", "Income")
         )
         
         spCategory.adapter = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_spinner_dropdown_item,
-            listOf("Select Category","Clothing", "Entertainment", "Food", "Fuel", "Groceries", "Health", "Housing", "Internet", "Insurance", "Salary", "Wages", "Investments")
+            listOf("Select","Clothing", "Entertainment", "Food", "Fuel", "Groceries", "Health", "Housing", "Internet", "Insurance", "Salary", "Wages", "Investments")
         )
         
         spPayment.adapter = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_spinner_dropdown_item,
-            listOf("Select Payment","Cash", "Credit Card", "Debit Card")
+            listOf("Select","Cash", "Credit Card", "Debit Card")
         )
         
         etDate.setOnClickListener { showDatePicker(etDate) }
@@ -100,7 +100,9 @@ class CreateTransactionFragment : Fragment() {
         etEndTime.setOnClickListener { showTimePicker(etEndTime) }
         btnAddImage.setOnClickListener { showImagePickerDialog() }
         
-        btnAdd.setOnClickListener { saveTransaction() }
+        btnAdd.setOnClickListener {
+            saveTransaction()
+        }
     }
     
     private fun saveTransaction() {
@@ -113,25 +115,17 @@ class CreateTransactionFragment : Fragment() {
         val start = etStartTime.text.toString()
         val end = etEndTime.text.toString()
         val desc = etDescription.text.toString().trim()
-        
+
+        if (category == "Select" || payment == "Select" || type == "Select") {
+            Toast.makeText(requireContext(), "Invalid selection", Toast.LENGTH_SHORT).show()
+            return
+        }
         if (title.isEmpty() || amount <= 0.0 || date.isEmpty()) {
             Toast.makeText(requireContext(), "Please fill Title, Amount & Date", Toast.LENGTH_SHORT).show()
             return
         }
-
-
-        val transaction = Transaction(
-            title = title,
-            transactionType = type,
-            amount = amount,
-            category = category,
-            paymentMethod = payment,
-            dateOfTransaction = date,
-            startTime = start,
-            endTime = end,
-            description = desc
-        )
-
+        val transaction = Expense(title, type, amount, category, payment, date, start, end, desc, imageUri?.toString())
+        
         val uid = FirebaseAuth.getInstance().currentUser?.uid
         if (uid == null) {
             Toast.makeText(requireContext(), "User not logged in", Toast.LENGTH_SHORT).show()
