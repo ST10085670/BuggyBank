@@ -9,42 +9,12 @@
     android:padding="16dp">
 
 
-    <ImageView
-        android:id="@+id/main_image"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_gravity="center"
-        android:layout_margin="20sp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="28dp"
-        android:layout_weight="1"
-        android:background="@drawable/menu"
-        android:importantForAccessibility="yes"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/main_logo"
-        android:layout_width="41dp"
-        android:layout_height="45dp"
-        android:layout_gravity="center"
-        android:layout_margin="10sp"
-        android:layout_marginStart="17dp"
-        android:layout_marginTop="16dp"
-        android:layout_weight="1"
-        android:background="@drawable/logo"
-        android:importantForAccessibility="yes"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.062"
-        app:layout_constraintStart_toEndOf="@+id/main_image"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Create A Category"
-        android:textSize="20sp"
+        android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -52,25 +22,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.123" />
-        app:layout_constraintBottom_toTopOf="@+id/categoryRecyclerView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.854" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/categoryRecyclerView"
-        android:layout_width="250dp"
-        android:layout_height="300dp"
+        android:layout_width="255dp"
+        android:layout_height="229dp"
+        android:background="@drawable/bg_dashed_border"
+        android:paddingStart="10sp"
+        android:paddingTop="10sp"
+        android:paddingBottom="10sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.282" />
-        app:layout_constraintBottom_toTopOf="@+id/categoryNameInput"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+
 
     <TextView
         android:id="@+id/labelName"
@@ -82,28 +49,26 @@
         android:textSize="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.106"
+        app:layout_constraintHorizontal_bias="0.143"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.642" />
-        app:layout_constraintBottom_toTopOf="@+id/labelType"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintVertical_bias="0.591" />
 
     <EditText
         android:id="@+id/categoryNameInput"
         android:layout_width="197dp"
-        android:layout_height="61dp"
+        android:layout_height="50dp"
         android:layout_marginStart="68dp"
+        android:background="@drawable/vector_textbox"
         android:hint="Enter category name"
         android:minHeight="48dp"
+        android:paddingStart="10sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.631" />
-        app:layout_constraintBottom_toTopOf="@+id/incomeRadioButton"
-        app:layout_constraintStart_toEndOf="@+id/labelName" />
+        app:layout_constraintVertical_bias="0.573" />
 
     <TextView
         android:id="@+id/labelType"
@@ -119,69 +84,44 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.75" />
-        app:layout_constraintBottom_toTopOf="@+id/addCategoryButton"
-        app:layout_constraintStart_toStartOf="parent" />
 
-    <RadioGroup
-        android:id="@+id/typeRadioGroup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
-        android:layout_marginBottom="32dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/labelType"
-        app:layout_constraintStart_toStartOf="parent">
-
-    </RadioGroup><![CDATA[
-
-    app:layout_constraintStart_toStartOf="parent" />
-
-    ]]>
 
     <Button
         android:id="@+id/addCategoryButton"
-        android:layout_width="wrap_content"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="104dp"
+        android:backgroundTint="@color/dark_green"
         android:text="Add"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.938" />
+        app:layout_constraintVertical_bias="1.0" />
 
-    <RadioButton
-        android:id="@+id/expenseRadioButton"
-        android:layout_width="90dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="84dp"
-        android:layout_marginBottom="28dp"
-        android:text="Expense"
-
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.605"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.746" />
-        app:layout_constraintBottom_toTopOf="@+id/addCategoryButton"
-        app:layout_constraintStart_toEndOf="@+id/labelType" />
-
-    <RadioButton
-        android:id="@+id/incomeRadioButton"
-        android:layout_width="wrap_content"
+    <RadioGroup
+        android:id="@+id/typeRadioGroup"
+        android:layout_width="110dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="28dp"
-        android:text="Income"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.653"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.746" />
-        app:layout_constraintBottom_toTopOf="@+id/addCategoryButton"
-        app:layout_constraintStart_toEndOf="@+id/expenseRadioButton" />
+        app:layout_constraintVertical_bias="0.732">
 
+
+        <RadioButton
+            android:id="@+id/expenseRadioButton"
+            android:layout_width="90dp"
+            android:layout_height="50dp"
+            android:text="Expense" />
+
+        <RadioButton
+            android:id="@+id/incomeRadioButton"
+            android:layout_width="90dp"
+            android:layout_height="50dp"
+            android:text="Income" />
+    </RadioGroup>
 </androidx.constraintlayout.widget.ConstraintLayout>
