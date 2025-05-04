@@ -1,59 +1,222 @@
 package vcmsa.projects.buggybank
 
+import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [AnalysisFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class AnalysisFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var chart: BarChart
+    private lateinit var database: DatabaseReference
+
+    val dummyTransactions = listOf(
+        Transaction(
+            title = "Groceries",
+            category = "Food",
+            paymentMethod = "Card",
+            amount = 1500.0,
+            dateOfTransaction = "2025-04-10",
+            transactionType = "Expense",
+            description = "Monthly groceries",
+            startTime = "14:00",
+            endTime = "14:30"
+        ),
+        Transaction(
+            title = "Bus Pass",
+            category = "Transport",
+            paymentMethod = "Cash",
+            amount = 150.0,
+            dateOfTransaction = "2025-04-03",
+            transactionType = "Expense",
+            description = "Bus fare for April",
+            startTime = "09:00",
+            endTime = "09:05"
+        ),
+        Transaction(
+            title = "Gym Membership",
+            category = "Health",
+            paymentMethod = "Card",
+            amount = 600.0,
+            dateOfTransaction = "2025-04-05",
+            transactionType = "Expense",
+            description = "Monthly gym",
+            startTime = "10:00",
+            endTime = "10:10"
+        ),
+        Transaction(
+            title = "Movie Night",
+            category = "Entertainment",
+            paymentMethod = "Card",
+            amount = 270.0,
+            dateOfTransaction = "2025-04-15",
+            transactionType = "Expense",
+            description = "Cinema ticket",
+            startTime = "18:00",
+            endTime = "20:30"
+        ),
+        Transaction(
+            title = "Freelance Project",
+            category = "Work",
+            paymentMethod = "Bank Transfer",
+            amount = 20000.0,
+            dateOfTransaction = "2025-04-20",
+            transactionType = "Income",
+            description = "App development job",
+            startTime = "09:00",
+            endTime = "17:00"
+        ),
+        Transaction(
+            title = "Allowance",
+            category = "Personal",
+            paymentMethod = "Cash",
+            amount = 300.0,
+            dateOfTransaction = "2025-04-01",
+            transactionType = "Income",
+            description = "Monthly allowance from family",
+            startTime = "08:00",
+            endTime = "08:10"
+        )
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_analysis, container, false)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment AnalysisFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            AnalysisFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        chart = view.findViewById(R.id.statusBar)
+        database = FirebaseDatabase.getInstance().reference
+        analyzeDummyData()
+        loadChartData()
+    }
+
+
+    private fun loadChartData() {
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser == null) {
+            Log.e("Firebase", "User not logged in.")
+            return
+        }
+
+        val userId = currentUser.uid
+        val transactionsRef = FirebaseDatabase.getInstance().getReference("users/$userId/transactions")
+
+        transactionsRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val transactionData = mutableMapOf<String, Float>()
+
+                for (transactionSnapshot in snapshot.children) {
+                    val title = transactionSnapshot.child("title").getValue(String::class.java)
+                    val amount = transactionSnapshot.child("amount").getValue(Float::class.java)
+
+                    if (!title.isNullOrBlank() && amount != null) {
+                        transactionData[title] = amount
+                    }
+                }
+
+                if (transactionData.isEmpty()) {
+                    Log.w("Firebase", "No transactions found.")
+                } else {
+                    showChart(transactionData)
                 }
             }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("Firebase", "Database error: ${error.message}")
+            }
+        })
     }
+
+    private fun showChart(transactions: Map<String, Float>) {
+        val entries = ArrayList<BarEntry>()
+        val labels = transactions.keys.toList()
+
+        for ((index, title) in labels.withIndex()) {
+            entries.add(BarEntry(index.toFloat(), transactions[title] ?: 0f))
+        }
+
+        val dataSet = BarDataSet(entries, "Transactions").apply {
+            color = Color.BLUE
+        }
+
+        val data = BarData(dataSet)
+        data.barWidth = 0.9f
+
+        chart.data = data
+        chart.setFitBars(true)
+
+        chart.xAxis.valueFormatter = IndexAxisValueFormatter(labels)
+        chart.xAxis.granularity = 1f
+        chart.xAxis.setDrawGridLines(false)
+        chart.axisLeft.setDrawGridLines(false)
+        chart.axisRight.isEnabled = false
+        chart.description.isEnabled = false
+        chart.invalidate()
+    }
+
+
+    private fun analyzeDummyData() {
+        val expensesByCategory = mutableMapOf<String, Double>()
+        var totalExpenses = 0.00
+
+        for (transaction in dummyTransactions) {
+            if (transaction.transactionType == "Expense") {
+                expensesByCategory[transaction.title] =
+                    expensesByCategory.getOrDefault(transaction.title, 0.00) + transaction.amount
+                totalExpenses += transaction.amount
+            }
+        }
+
+        // Simulate current month data to compare
+        val currentMonthExpenses = mapOf(
+            "Food" to 1000f,
+            "Transport" to 400f,
+            "Entertainment" to 800f
+        )
+
+        // Calculate differences
+        val savingsMap = mutableMapOf<String, Float>()
+        val overspentMap = mutableMapOf<String, Float>()
+
+        for ((category, lastMonthAmount) in expensesByCategory) {
+            val currentAmount = currentMonthExpenses[category] ?: 0f
+            val diff = lastMonthAmount - currentAmount
+            if (diff > 0) {
+                savingsMap[category] = diff.toFloat()
+            } else if (diff < 0) {
+                overspentMap[category] = (-diff).toFloat()
+            }
+        }
+
+        val savedMost = savingsMap.maxByOrNull { it.value }?.key ?: "N/A"
+      //  val overspentMost = overspentMap.maxByOrNull { it.value }?.key ?: "N/A"
+
+        // Display results (replace with actual TextViews)
+        Log.d("Analysis", "Total Expenses: R $totalExpenses")
+        Log.d("Analysis", "Saved Most In: $savedMost")
+       // Log.d("Analysis", "Overspent Most In: $overspentMost")
+
+        // Example usage in UI
+        view?.findViewById<TextView>(R.id.txtTotalExpensesData)?.text = "R $totalExpenses"
+        view?.findViewById<TextView>(R.id.txtSavedMostData)?.text = savedMost
+       // view?.findViewById<TextView>(R.id.txtOverspentData)?.text = overspentMost
+    }
+
 }

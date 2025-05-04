@@ -127,15 +127,15 @@ class MenuBar : AppCompatActivity() {
                     R.id.ic_trophies -> replaceFrag(FragDashboard)
                 }
 
-                true
-            }
+            true
+        }
 
-            //Side nav menu bar code
-            navToggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
-            drawerLayout.addDrawerListener(navToggle)
-            navToggle.syncState()
+        //Side nav menu bar code
+        navToggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
+        drawerLayout.addDrawerListener(navToggle)
+        navToggle.syncState()
 
-            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
             sideNavView.setNavigationItemSelectedListener {
                 when (it.itemId) {
@@ -219,79 +219,91 @@ class MenuBar : AppCompatActivity() {
                 drawerLayout.closeDrawer(GravityCompat.START)
                 true
 
-            }
+        }
 
 
     }
-        override fun onOptionsItemSelected(item: MenuItem): Boolean {
-            return if (navToggle.onOptionsItemSelected(item)) {
-                true
-            } else super.onOptionsItemSelected(item)
-        }
-
-
-        private fun replaceFrag(fragment: Fragment) {
-            val transaction = supportFragmentManager.beginTransaction()
-            lifecycleScope.launch {
-                transaction.replace(R.id.fragmentContainerView, fragment)
-                transaction.commit()
-            }
-        }
-
-
-        fun createPDF(transactions: List<Transaction>) {
-            val pdfDocument = PdfDocument()
-            val pageInfo = PdfDocument.PageInfo.Builder(300, 600, 1).create()
-            val page = pdfDocument.startPage(pageInfo)
-            val canvas = page.canvas
-            val paint = Paint()
-            paint.textSize = 12f
-
-            var y = 30f
-            canvas.drawText("BuggyBank Expense Report", 10f, y, paint)
-            y += 20f
-            //loop each transaction within db
-            transactions.forEach {
-                canvas.drawText(
-                    "${it.dateOfTransaction}: ${it.description} - R${it.amount}",
-                    10f,
-                    y,
-                    paint
-                )
-                y += 20
-            }
-
-
-            pdfDocument.finishPage(page)
-
-            val docsFolder = getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
-            if (docsFolder != null && !docsFolder.exists()) {
-                docsFolder.mkdirs()
-            }
-
-            val file = File(docsFolder, "Report.pdf")
-
-            try {
-                pdfDocument.writeTo(FileOutputStream(file))
-                pdfDocument.close()
-
-                Toast.makeText(this, "PDF saved to: ${file.absolutePath}", Toast.LENGTH_LONG).show()
-
-                val uri: Uri = FileProvider.getUriForFile(
-                    this,
-                    applicationContext.packageName + ".provider",
-                    file
-                )
-
-                val openIntent = Intent(Intent.ACTION_VIEW)
-                openIntent.setDataAndType(uri, "application/pdf")
-                openIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                startActivity(openIntent)
-
-            } catch (e: Exception) {
-                e.printStackTrace()
-                Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_LONG).show()
-            }
+    override fun onBackPressed() {
+        val drawerLayout: DrawerLayout = findViewById(R.id.drawerLayout)
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START)
+        } else if (supportFragmentManager.backStackEntryCount > 0) {
+            supportFragmentManager.popBackStack()
+        } else {
+            super.onBackPressed()
         }
     }
+
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return if (navToggle.onOptionsItemSelected(item)) {
+            true
+        } else super.onOptionsItemSelected(item)
+    }
+
+
+    private fun replaceFrag(fragment: Fragment) {
+        val transaction = supportFragmentManager.beginTransaction()
+        lifecycleScope.launch {
+            transaction.replace(R.id.fragmentContainerView, fragment).addToBackStack(null)
+            transaction.commit()
+        }
+    }
+
+
+    fun createPDF(transactions: List<Transaction>) {
+        val pdfDocument = PdfDocument()
+        val pageInfo = PdfDocument.PageInfo.Builder(300, 600, 1).create()
+        val page = pdfDocument.startPage(pageInfo)
+        val canvas = page.canvas
+        val paint = Paint()
+        paint.textSize = 12f
+
+        var y = 30f
+        canvas.drawText("BuggyBank Expense Report", 10f, y, paint)
+        y += 20f
+        //loop each transaction within db
+        transactions.forEach {
+            canvas.drawText(
+                "${it.dateOfTransaction}: ${it.description} - R${it.amount}",
+                10f,
+                y,
+                paint
+            )
+            y += 20
+        }
+
+
+        pdfDocument.finishPage(page)
+
+        val docsFolder = getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
+        if (docsFolder != null && !docsFolder.exists()) {
+            docsFolder.mkdirs()
+        }
+
+        val file = File(docsFolder, "Report.pdf")
+
+        try {
+            pdfDocument.writeTo(FileOutputStream(file))
+            pdfDocument.close()
+
+            Toast.makeText(this, "PDF saved to: ${file.absolutePath}", Toast.LENGTH_LONG).show()
+
+            val uri: Uri = FileProvider.getUriForFile(
+                this,
+                applicationContext.packageName + ".provider",
+                file
+            )
+
+            val openIntent = Intent(Intent.ACTION_VIEW)
+            openIntent.setDataAndType(uri, "application/pdf")
+            openIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            startActivity(openIntent)
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_LONG).show()
+        }
+    }
+}
 

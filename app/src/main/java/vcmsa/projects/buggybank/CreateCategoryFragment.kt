@@ -61,12 +61,16 @@ class CreateCategoryFragment : Fragment() {
         categoryRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         categoryRecyclerView.adapter = categoryAdapter
 
-        addCategoryButton.setOnClickListener { addCategory() }
+        addCategoryButton.setOnClickListener {
+            addCategory()
+        typeRadioGroup.clearCheck() //clears selection of radio buttons
+        }
         
         // Ensure only one radio button is selected at a time
         typeRadioGroup.setOnCheckedChangeListener { group, checkedId ->
             group.check(checkedId)
-        }
+        
+       
     }
 
     private fun addCategory() {
