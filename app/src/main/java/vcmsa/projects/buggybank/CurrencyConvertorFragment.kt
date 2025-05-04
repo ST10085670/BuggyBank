@@ -19,8 +19,9 @@ class CurrencyConverterFragment : Fragment() {
     private lateinit var spinnerTo: Spinner
     private lateinit var btnConvert: Button
     private lateinit var tvResult: TextView
+    private lateinit var btnClear: Button
 
-    private val currencies = listOf("USD", "EUR", "ZAR", "GBP", "JPY")
+    private val currencies = listOf("Select","USD", "EUR", "ZAR", "GBP", "JPY")
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -32,6 +33,7 @@ class CurrencyConverterFragment : Fragment() {
         spinnerTo = view.findViewById(R.id.spinnerTo)
         btnConvert = view.findViewById(R.id.btnConvert)
         tvResult = view.findViewById(R.id.tvResult)
+        btnClear = view.findViewById(R.id.btnClear)
 
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, currencies)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -45,6 +47,11 @@ class CurrencyConverterFragment : Fragment() {
             val to = spinnerTo.selectedItem.toString()
             val amount = etAmount.text.toString().toDoubleOrNull()
             val apiKey = "bAfl2F3hdBkBMd0jUt6kQGpFTaGTAZLy"
+
+            if (from == "Select" || to == "Select") {
+                Toast.makeText(requireContext(), "Invalid selection", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
 
             if (amount == null) {
                 Toast.makeText(requireContext(), "Enter valid amount", Toast.LENGTH_SHORT).show()
@@ -70,6 +77,15 @@ class CurrencyConverterFragment : Fragment() {
                     tvResult.text = "Error: ${e.localizedMessage}"
                 }
             }
+
+        }
+
+//resets to default
+        btnClear.setOnClickListener{
+            tvResult.text = ""
+            spinnerTo.setSelection(0)
+            spinnerFrom.setSelection(0)
+            etAmount.text.clear()
 
         }
 

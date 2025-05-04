@@ -1,11 +1,13 @@
 package vcmsa.projects.buggybank
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
@@ -36,6 +38,9 @@ class SetBudgetFragment : Fragment() {
         val btnGroceries = view.findViewById<Button>(R.id.btnGroceries)
         val btnInsurance = view.findViewById<Button>(R.id.btnInsurance)
         val btnInternet = view.findViewById<Button>(R.id.btnInternet)
+        val etMaxValue = view.findViewById<EditText>(R.id.etMaxValue)
+        val btnSetMax = view.findViewById<Button>(R.id.btnSetMax)
+
 
         val btnSetCatMinimum = view.findViewById<Button>(R.id.btnSet)
 
@@ -58,6 +63,7 @@ class SetBudgetFragment : Fragment() {
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
+
         btnSetCatMinimum.setOnClickListener {
             val selectedCategory = changingHeading.text.toString()
             val maxValue = seekBar.progress
@@ -70,11 +76,23 @@ class SetBudgetFragment : Fragment() {
                     .addOnSuccessListener {
                         Toast.makeText(requireContext(), "Budget saved!", Toast.LENGTH_SHORT).show()
                     }
-                    .addOnFailureListener {
+                    .addOnFailureListener { e ->
                         Toast.makeText(requireContext(), "Failed to save", Toast.LENGTH_SHORT).show()
+                        Log.e("FIREBASE_ERROR", "Save failed", e)
                     }
-            } else {
+            }
+            else {
                 Toast.makeText(requireContext(), "Select a category first", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        btnSetMax.setOnClickListener {
+            val maxInput = etMaxValue.text.toString().toIntOrNull()
+            if (maxInput != null && maxInput > 0) {
+                seekBar.max = maxInput
+                Toast.makeText(requireContext(), "SeekBar max set to $maxInput", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(requireContext(), "Please enter a valid number > 0", Toast.LENGTH_SHORT).show()
             }
         }
 
