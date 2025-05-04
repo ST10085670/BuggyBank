@@ -29,6 +29,7 @@ exp4j = "0.4.8"
 
 retrofit = "2.9.0"
 gson = "2.10.1"
+firebaseStorageKtx = "21.0.1"
 
 
 [libraries]
@@ -64,6 +65,7 @@ exp4j = { group = "net.objecthunter", name = "exp4j", version.ref = "exp4j" }
 
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
+firebase-storage-ktx = { group = "com.google.firebase", name = "firebase-storage-ktx", version.ref = "firebaseStorageKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
