@@ -7,36 +7,6 @@
     android:background="@drawable/main_background"
     tools:context=".ReportFragment">
 
-    <ImageView
-        android:id="@+id/main_image"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_gravity="center"
-        android:layout_margin="20sp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="28dp"
-        android:layout_weight="1"
-        android:background="@drawable/menu"
-        android:importantForAccessibility="yes"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/main_logo"
-        android:layout_width="41dp"
-        android:layout_height="45dp"
-        android:layout_gravity="center"
-        android:layout_margin="10sp"
-        android:layout_marginStart="17dp"
-        android:layout_marginTop="16dp"
-        android:layout_weight="1"
-        android:background="@drawable/logo"
-        android:importantForAccessibility="yes"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.062"
-        app:layout_constraintStart_toEndOf="@+id/main_image"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvTransactions"
         android:layout_width="367dp"

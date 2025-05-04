@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.view.MenuItem
+import android.view.animation.AlphaAnimation
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
@@ -40,14 +41,14 @@ private val FragLogout = logoutFragment()
 
 
 class MenuBar : AppCompatActivity() {
-
+    
     lateinit var navToggle: ActionBarDrawerToggle
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_menubar)
-
+        
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.menu)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -76,25 +77,63 @@ class MenuBar : AppCompatActivity() {
 
         sideNavView.bringToFront()
         drawerLayout.requestLayout()
-
+        
         //Bottom menu bar nav code
         val bottomBar = findViewById<BottomNavigationView>(R.id.NavBar)
-
 
         // navigation for bottom nav bar
         bottomBar.setOnItemSelectedListener {
             when (it.itemId) {
-
-                R.id.ic_home -> replaceFrag(FragDashboard)
-                R.id.ic_analysis -> replaceFrag(FragAnalysis)
+                
+                R.id.ic_home -> {
+                    val fadeOut = AlphaAnimation(1f, 0f).apply {
+                        duration = 150
+                        fillAfter = true
+                    }
+                    val fadeIn = AlphaAnimation(0f, 1f).apply {
+                        duration = 150
+                        fillAfter = true
+                        startOffset = 150
+                    }
+                    FragDashboard.view?.startAnimation(fadeOut)
+                    FragDashboard.view?.postDelayed({ FragDashboard.view?.startAnimation(fadeIn) }, 150)
+                    replaceFrag(FragDashboard)
+                }
+                R.id.ic_analysis -> {
+                    val fadeOut = AlphaAnimation(1f, 0f).apply {
+                        duration = 150
+                        fillAfter = true
+                    }
+                    val fadeIn = AlphaAnimation(0f, 1f).apply {
+                        duration = 150
+                        fillAfter = true
+                        startOffset = 150
+                    }
+                    FragAnalysis.view?.startAnimation(fadeOut)
+                    FragAnalysis.view?.postDelayed({ FragAnalysis.view?.startAnimation(fadeIn) }, 150)
+                    replaceFrag(FragAnalysis)
+                }
                 R.id.ic_create -> {
                     val showPopUp = FragCreatePopUp
                     showPopUp.show(supportFragmentManager, "showPopUp")
                 }
 
-                R.id.ic_transactions -> replaceFrag(FragTransactionRecords)
-                R.id.ic_trophies -> replaceFrag(FragDashboard)
-            }
+                    R.id.ic_transactions -> {
+                        val fadeOut = AlphaAnimation(1f, 0f).apply {
+                            duration = 150
+                            fillAfter = true
+                        }
+                        val fadeIn = AlphaAnimation(0f, 1f).apply {
+                            duration = 150
+                            fillAfter = true
+                            startOffset = 150
+                        }
+                        FragTransactionRecords.view?.startAnimation(fadeOut)
+                        FragTransactionRecords.view?.postDelayed({ FragTransactionRecords.view?.startAnimation(fadeIn) }, 150)
+                        replaceFrag(FragTransactionRecords)
+                    }
+                    R.id.ic_trophies -> replaceFrag(FragDashboard)
+                }
 
             true
         }
@@ -106,18 +145,87 @@ class MenuBar : AppCompatActivity() {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        sideNavView.setNavigationItemSelectedListener {
-            when (it.itemId) {
-                R.id.is_setABudget -> replaceFrag(FragSetABudget)
-                R.id.is_reports -> replaceFrag(FragReport)
-                R.id.is_calculator -> replaceFrag(FragCalculator)
-                R.id.is_currencyConvertor -> replaceFrag(FragCurrencyConvertor)
-                R.id.is_switchAccount -> Toast.makeText(this, "Switch account coming soon", Toast.LENGTH_LONG).show()
-                R.id.is_budgetBuddy -> Toast.makeText(this, "Budget buddy coming soon", Toast.LENGTH_LONG).show()
-                R.id.is_logut -> Toast.makeText(this, "You will be logged out", Toast.LENGTH_LONG).show()
-            }
-            drawerLayout.closeDrawer(GravityCompat.START)
-            true
+            sideNavView.setNavigationItemSelectedListener {
+                when (it.itemId) {
+                    R.id.is_setABudget -> {
+                        val fadeOut = AlphaAnimation(1f, 0f).apply {
+                            duration = 150
+                            fillAfter = true
+                        }
+                        val fadeIn = AlphaAnimation(0f, 1f).apply {
+                            duration = 150
+                            fillAfter = true
+                            startOffset = 150
+                        }
+                        FragSetABudget.view?.startAnimation(fadeOut)
+                        FragSetABudget.view?.postDelayed({ FragSetABudget.view?.startAnimation(fadeIn) }, 150)
+                        replaceFrag(FragSetABudget)
+                    }
+                    R.id.is_reports -> {
+                        val fadeOut = AlphaAnimation(1f, 0f).apply {
+                            duration = 150
+                            fillAfter = true
+                        }
+                        val fadeIn = AlphaAnimation(0f, 1f).apply {
+                            duration = 150
+                            fillAfter = true
+                            startOffset = 150
+                        }
+                        FragReport.view?.startAnimation(fadeOut)
+                        FragReport.view?.postDelayed({ FragReport.view?.startAnimation(fadeIn) }, 150)
+                        replaceFrag(FragReport)
+                    }
+                    R.id.is_calculator -> {
+                        val fadeOut = AlphaAnimation(1f, 0f).apply {
+                            duration = 150
+                            fillAfter = true
+                        }
+                        val fadeIn = AlphaAnimation(0f, 1f).apply {
+                            duration = 150
+                            fillAfter = true
+                            startOffset = 150
+                        }
+                        FragCalculator.view?.startAnimation(fadeOut)
+                        FragCalculator.view?.postDelayed({ FragCalculator.view?.startAnimation(fadeIn) }, 150)
+                        replaceFrag(FragCalculator)
+                    }
+                    R.id.is_currencyConvertor -> {
+                        val fadeOut = AlphaAnimation(1f, 0f).apply {
+                            duration = 150
+                            fillAfter = true
+                        }
+                        val fadeIn = AlphaAnimation(0f, 1f).apply {
+                            duration = 150
+                            fillAfter = true
+                            startOffset = 150
+                        }
+                        FragCurrencyConvertor.view?.startAnimation(fadeOut)
+                        FragCurrencyConvertor.view?.postDelayed({ FragCurrencyConvertor.view?.startAnimation(fadeIn) }, 150)
+                        replaceFrag(FragCurrencyConvertor)
+                    }
+                    R.id.is_switchAccount -> Toast.makeText(this, "Switch account coming soon", Toast.LENGTH_LONG).show()
+                    R.id.is_budgetBuddy -> Toast.makeText(this, "Budget buddy coming soon", Toast.LENGTH_LONG).show()
+                    R.id.is_logut -> {
+                        
+                        
+                        val fadeOut = AlphaAnimation(1f, 0f).apply {
+                            duration = 150
+                            fillAfter = true
+                        }
+                        val fadeIn = AlphaAnimation(0f, 1f).apply {
+                            duration = 150
+                            fillAfter = true
+                            startOffset = 150
+                        }
+                        FragLogout.view?.startAnimation(fadeOut)
+                        FragLogout.view?.postDelayed({ FragLogout.view?.startAnimation(fadeIn) }, 150)
+                        val showPopUp = FragLogout
+                        showPopUp.show(supportFragmentManager,"showPopUp")
+                        replaceFrag(FragLogout)
+                    }
+                }
+                drawerLayout.closeDrawer(GravityCompat.START)
+                true
 
         }
 

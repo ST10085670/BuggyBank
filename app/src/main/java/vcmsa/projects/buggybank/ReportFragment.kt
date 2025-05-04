@@ -107,7 +107,7 @@ class ReportFragment : Fragment() {
     private fun createPDF(transactions: List<Transaction>) {
         val pdfDocument = PdfDocument()
 
-        // Set the page size to A4 landscape (landscape width is 842 and height is 595)
+        // making page A4 landscape (landscape width is 842 and height is 595)
         val pageInfo = PdfDocument.PageInfo.Builder(842, 595, 1).create()
         val page = pdfDocument.startPage(pageInfo)
         val canvas = page.canvas
@@ -119,11 +119,11 @@ class ReportFragment : Fragment() {
         var y = 40f
         val xStart = 20f
 
-        // Draw Header
+        //main heading
         canvas.drawText("BuggyBank - Transaction Report", xStart, y, paint)
         y += 30
 
-        // Draw Column Titles
+        // columns
         val headers = listOf("Title", "Category", "Payment", "Amount", "Date", "Type", "Start", "End", "Desc")
         val columnWidths = listOf(80, 80, 80, 70, 80, 70, 70, 70, 100) // Adjusted column widths for landscape
         var x = xStart
@@ -135,7 +135,7 @@ class ReportFragment : Fragment() {
         y += 20
         paint.isFakeBoldText = false // normal text for rows
 
-        // Draw Rows
+        // rows
         transactions.forEach {
             x = xStart
             val rowValues = listOf(
@@ -159,7 +159,7 @@ class ReportFragment : Fragment() {
 
         pdfDocument.finishPage(page)
 
-        // Save and open file
+        // saving and opening file
         val docsFolder = requireContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
         if (docsFolder != null && !docsFolder.exists()) {
             docsFolder.mkdirs()

@@ -18,6 +18,7 @@
         android:fontFamily="@font/chakra_petch_bold"
         android:text="Create category"
         android:textSize="26dp"
+        android:backgroundTint="@color/dark_green"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -29,6 +30,7 @@
         android:layout_marginBottom="120dp"
         android:fontFamily="@font/chakra_petch_bold"
         android:gravity="center"
+        android:backgroundTint="@color/green"
         android:text="Create transaction"
         android:textSize="26dp"
         app:layout_constraintBottom_toBottomOf="parent"

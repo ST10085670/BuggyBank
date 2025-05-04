@@ -38,7 +38,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.282" />
 
-
     <TextView
         android:id="@+id/labelName"
         android:layout_width="wrap_content"
@@ -52,7 +51,7 @@
         app:layout_constraintHorizontal_bias="0.143"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.591" />
+        app:layout_constraintVertical_bias="0.642" />
 
     <EditText
         android:id="@+id/categoryNameInput"
@@ -68,7 +67,7 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.573" />
+        app:layout_constraintVertical_bias="0.631" />
 
     <TextView
         android:id="@+id/labelType"
@@ -85,6 +84,29 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.75" />
 
+    <RadioGroup
+        android:id="@+id/typeRadioGroup"
+        android:layout_width="118dp"
+        android:layout_height="120dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.674"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.78">
+
+        <RadioButton
+            android:id="@+id/expenseRadioButton"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:text="Expense" />
+
+        <RadioButton
+            android:id="@+id/incomeRadioButton"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:text="Income" />
+    </RadioGroup>
 
     <Button
         android:id="@+id/addCategoryButton"
@@ -100,28 +122,5 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
 
-    <RadioGroup
-        android:id="@+id/typeRadioGroup"
-        android:layout_width="110dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.653"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.732">
 
-
-        <RadioButton
-            android:id="@+id/expenseRadioButton"
-            android:layout_width="90dp"
-            android:layout_height="50dp"
-            android:text="Expense" />
-
-        <RadioButton
-            android:id="@+id/incomeRadioButton"
-            android:layout_width="90dp"
-            android:layout_height="50dp"
-            android:text="Income" />
-    </RadioGroup>
 </androidx.constraintlayout.widget.ConstraintLayout>

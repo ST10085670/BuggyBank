@@ -3,8 +3,8 @@ package vcmsa.projects.buggybank
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.util.Patterns
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -36,42 +36,39 @@ class Sign_in : AppCompatActivity() {
         auth = Firebase.auth
         Log.d(TAG, "onCreate: UI initialized")
         
-        // Apply insets correctly
+        // Apply window insets to the root view safely using binding
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            Log.d(TAG, "onCreate: Applied window insets")
             insets
         }
         
+        // Handle back button press
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                Log.d(TAG, "onBackPressed: Going to sign up page")
+                val intent = Intent(this@Sign_in, Sign_up::class.java)
+                startActivity(intent)
+                overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+                finish()
+            }
+        })
+        
+        // Sign in button click
+        binding.SignInButton.setOnClickListener {
+            Log.d(TAG, "onClick: Sign In button clicked")
+            signInUser()
+        }
+        
+        // Sign up button click
         binding.SignInRegister.setOnClickListener {
             Log.d(TAG, "onClick: Register button clicked")
             startActivity(Intent(this, Sign_up::class.java))
             finish()
         }
         
-        binding.SignInButton.setOnClickListener {
-            Log.d(TAG, "onClick: Sign In button clicked")
-            val email = binding.SignInEmail.text.toString().trim()
-            val password = binding.SignInPassword.text.toString().trim()
-            
-            when {
-                email.isEmpty() || password.isEmpty() -> {
-                    Toast.makeText(this, "Please enter both email and password", Toast.LENGTH_SHORT).show()
-                    Log.w(TAG, "Validation failed: fields are empty")
-                }
-                !Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
-                    Toast.makeText(this, "Please enter a valid email", Toast.LENGTH_SHORT).show()
-                    Log.w(TAG, "Validation failed: invalid email format")
-                    
-                    
-                }
-                else -> {
-                    signInUser(email, password)
-                    Log.d(TAG, "Validation passed, attempting sign-in")
-                }
-            }
-        }
-        
+        // Forgot password button click
         binding.vForgotPassword.setOnClickListener {
             Log.d(TAG, "onClick: Forgot Password button clicked")
             startActivity(Intent(this, ForgotPasswordActivity::class.java))
@@ -79,11 +76,14 @@ class Sign_in : AppCompatActivity() {
         }
     }
     
-    private fun signInUser(email: String, password: String) {
+    private fun signInUser() {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                Log.d(TAG, "signInUser: Starting Firebase login for $email")
-                auth.signInWithEmailAndPassword(email, password).await()
+                Log.d(TAG, "signInUser: Starting Firebase login")
+                auth.signInWithEmailAndPassword(
+                    binding.SignInEmail.text.toString().trim(),
+                    binding.SignInPassword.text.toString().trim()
+                ).await()
                 
                 val userId = auth.currentUser?.uid ?: throw Exception("User ID is null after sign-in")
                 val dbRef = FirebaseDatabase.getInstance().getReference("users").child(userId)
@@ -94,7 +94,6 @@ class Sign_in : AppCompatActivity() {
                     startActivity(Intent(this@Sign_in, MenuBar::class.java))
                     finish()
                 }
-                
             } catch (e: Exception) {
                 Log.e(TAG, "signInUser: Login failed", e)
                 withContext(Dispatchers.Main) {
@@ -108,7 +107,6 @@ class Sign_in : AppCompatActivity() {
         val message = when (e) {
             is FirebaseAuthInvalidUserException -> "User not found. Please register first."
             is FirebaseAuthInvalidCredentialsException -> "Incorrect email or password."
-            is FirebaseAuthUserCollisionException -> "An account with this email already exists."
             is FirebaseAuthEmailException -> "Invalid email format."
             is FirebaseAuthWeakPasswordException -> "Password too weak."
             is FirebaseNetworkException -> "Network error. Please check your connection."

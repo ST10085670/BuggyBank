@@ -14,6 +14,8 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -34,18 +36,36 @@ class CreateTransactionFragment : Fragment() {
     private lateinit var imagePreview: ImageView
     private var imageUri: Uri? = null
     
+    private val storage = Firebase.storage.reference
     private val galleryLauncher =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             uri?.let {
-                imageUri = it
-                imagePreview.setImageURI(it)
+                val filename = UUID.randomUUID().toString()
+                val imageRef = storage.child("images/$filename")
+                imageRef.putFile(it).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        imageRef.downloadUrl.addOnCompleteListener { uri ->
+                            imageUri = uri.result
+                            imagePreview.setImageURI(imageUri)
+                        }
+                    }
+                }
             }
         }
     
     private val cameraLauncher =
         registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
             if (success && imageUri != null) {
-                imagePreview.setImageURI(imageUri)
+                val filename = UUID.randomUUID().toString()
+                val imageRef = storage.child("images/$filename")
+                imageRef.putFile(imageUri!!).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        imageRef.downloadUrl.addOnCompleteListener { uri ->
+                            imageUri = uri.result
+                            imagePreview.setImageURI(imageUri)
+                        }
+                    }
+                }
             }
         }
     
