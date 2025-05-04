@@ -118,9 +118,20 @@ class CreateTransactionFragment : Fragment() {
             Toast.makeText(requireContext(), "Please fill Title, Amount & Date", Toast.LENGTH_SHORT).show()
             return
         }
-        
-        val transaction = Expense(title, type, amount, category, payment, date, start, end, desc, imageUri?.toString())
-        
+
+
+        val transaction = Transaction(
+            title = title,
+            transactionType = type,
+            amount = amount,
+            category = category,
+            paymentMethod = payment,
+            dateOfTransaction = date,
+            startTime = start,
+            endTime = end,
+            description = desc
+        )
+
         val uid = FirebaseAuth.getInstance().currentUser?.uid
         if (uid == null) {
             Toast.makeText(requireContext(), "User not logged in", Toast.LENGTH_SHORT).show()

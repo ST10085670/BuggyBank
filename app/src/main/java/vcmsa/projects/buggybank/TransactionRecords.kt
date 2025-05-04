@@ -6,13 +6,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.TextView
-import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewbinding.ViewBindings
-import androidx.viewbinding.ViewBindings.findChildViewById
+import com.example.transactionrecords.TransactionRecordsAdapter
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -21,22 +20,11 @@ import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.w3c.dom.Text
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-
-/**
- * A simple [Fragment] subclass.
- * Use the [TransactionRecords.newInstance] factory method to
- * create an instance of this fragment.
- */
 class TransactionRecords : Fragment() {
     private lateinit var rootNode: FirebaseDatabase
     private lateinit var userReference: DatabaseReference
@@ -44,6 +32,7 @@ class TransactionRecords : Fragment() {
     private lateinit var transactionsList: RecyclerView
     private val transactions = ArrayList<Transaction>()
     private lateinit var noTransactions :TextView
+    private val TAG = "TransactionRecords"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,14 +43,29 @@ class TransactionRecords : Fragment() {
 
         transactionsList = layout.findViewById(R.id.rvTransactions)
         noTransactions = layout.findViewById<TextView>(R.id.tvNoTransactions)
+        transactionsList.layoutManager = LinearLayoutManager(requireContext())
         adapter = TransactionRecordsAdapter(transactions)
         transactionsList.adapter = adapter
 
-        // Initialize Firebase and fetch data
-
+        // Initialize Firebase
         rootNode = FirebaseDatabase.getInstance()
-        userReference = rootNode.getReference("transactions") // Be consistent with your key names
 
+        // Use FirebaseAuth to get the current user ID
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+
+
+
+        Log.e(TAG, userId.toString())
+
+        if (userId == null) {
+            Log.e(TAG, "User not logged in")
+            noTransactions.visibility = View.VISIBLE
+            return layout
+        }
+
+        Log.e(TAG, "User: ${FirebaseAuth.getInstance().currentUser}")
+        userReference = rootNode.getReference("users").child(userId).child("transactions")
+        Log.e(TAG, "$userReference")
 
         fetchTransactionsFromFirebase()
         return layout
@@ -71,11 +75,12 @@ class TransactionRecords : Fragment() {
 
         lifecycleScope.launch {
             try {
-                // Move network-related code to background thread
+
                 val snapshot = withContext(Dispatchers.IO) {
                     val dataSnapshot = suspendCoroutine<DataSnapshot> { continuation ->
                         userReference.addListenerForSingleValueEvent(object : ValueEventListener {
                             override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                Log.e(TAG, "$dataSnapshot ")
                                 continuation.resume(dataSnapshot)
                             }
 
@@ -90,6 +95,7 @@ class TransactionRecords : Fragment() {
                 // Update the UI on the main thread
                 transactions.clear()
                 for (snapshot1 in snapshot.children) {
+                    Log.e(TAG, "$snapshot1")
                     val transaction = snapshot1.getValue(Transaction::class.java)
                     if (transaction != null) {
                         transactions.add(transaction)
@@ -97,16 +103,20 @@ class TransactionRecords : Fragment() {
                 }
                 adapter.notifyDataSetChanged()
 
+                if (transactions.isEmpty()) {
+                    noTransactions.visibility = View.VISIBLE
+                }
+
             } catch (e: Exception) {
                 // Handle errors, e.g. network failures
-                context?.let {
-                    Toast.makeText(
-                        it,
-                        "You have no transactions",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-                val TAG = "TransactionRecords"
+//                context?.let {
+//                    Toast.makeText(
+//                        it,
+//                        "You have no transactions",
+//                        Toast.LENGTH_SHORT
+//                    ).show()
+//                }
+
                 Log.e(TAG, "Failed to Fetch Transactions ", e )
                 noTransactions.visibility = View.VISIBLE;
 
