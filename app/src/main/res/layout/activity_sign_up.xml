@@ -55,9 +55,11 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0"
-            tools:ignore="RtlSymmetry,TextFields" />
+            tools:ignore="RtlSymmetry,TextFields"
+            android:inputType="textEmailAddress"/>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/editPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
@@ -70,15 +72,16 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.48"
             app:passwordToggleEnabled="true"
-            tools:ignore="RtlSymmetry">
+            tools:ignore="RtlSymmetry"
+            android:hint="@string/Password">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/Sign_up_password"
                 android:layout_width="304dp"
                 android:layout_height="50dp"
-                android:autofillHints=""
                 android:background="@drawable/vector_textbox"
-                android:hint="@string/Password"
+                android:ems="15"
+                android:inputType="textPassword"
                 android:paddingStart="10sp" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -89,24 +92,23 @@
             android:layout_margin="10dp"
             android:gravity="center"
             android:paddingStart="10sp"
+            app:passwordToggleEnabled="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.526"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="1.0"
-            app:passwordToggleEnabled="true"
-            tools:ignore="RtlSymmetry">
+            tools:ignore="RtlSymmetry"
+            android:hint="@string/conform_password">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/Sign_up_password_confirm"
                 android:layout_width="304dp"
                 android:layout_height="50dp"
-                android:autofillHints=""
                 android:background="@drawable/vector_textbox"
-                android:hint="@string/conform_password"
-
-                />
+                android:ems="15"
+                android:inputType="textPassword"/>
         </com.google.android.material.textfield.TextInputLayout>
 
 

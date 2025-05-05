@@ -83,6 +83,7 @@ class Sign_in : AppCompatActivity() {
                 auth.signInWithEmailAndPassword(
                     binding.SignInEmail.text.toString().trim(),
                     binding.SignInPassword.text.toString().trim()
+                    
                 ).await()
                 
                 val userId = auth.currentUser?.uid ?: throw Exception("User ID is null after sign-in")

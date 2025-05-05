@@ -49,6 +49,7 @@
         android:layout_width="match_parent"
         android:layout_height="65dp"
         android:gravity="center"
+        android:hint="@string/Password"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -62,9 +63,8 @@
             android:layout_width="380dp"
             android:layout_height="50dp"
             android:background="@drawable/vector_textbox"
-            android:hint="@string/Password"
-            android:paddingStart="20dp"
-            android:textDirection="ltr"
+            android:ems="15"
+            android:inputType="textPassword"
             android:textSize="18sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
