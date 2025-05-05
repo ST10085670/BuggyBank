@@ -1,5 +1,6 @@
 package vcmsa.projects.buggybank
 
+import SetBudgetFragment
 import android.content.Intent
 import android.graphics.Paint
 import android.graphics.pdf.PdfDocument
@@ -132,7 +133,7 @@ class MenuBar : AppCompatActivity() {
                         FragTransactionRecords.view?.postDelayed({ FragTransactionRecords.view?.startAnimation(fadeIn) }, 150)
                         replaceFrag(FragTransactionRecords)
                     }
-                    R.id.ic_trophies -> replaceFrag(FragDashboard)
+                    R.id.ic_trophies -> Toast.makeText(this, "Trophies coming soon", Toast.LENGTH_LONG).show()
                 }
 
             true

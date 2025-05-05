@@ -24,11 +24,7 @@ class logoutFragment : DialogFragment() {
 
         val btnCancel: Button = view.findViewById(R.id.cancelBtn)
         btnCancel.setOnClickListener {
-            val dbRef = FirebaseDatabase.getInstance().getReference("users")
-                .child(FirebaseAuth.getInstance().currentUser!!.uid)
-            val intent = Intent(context, MainPageFragment::class.java)
-            startActivity(intent)
-            dismiss()
+          requireActivity().supportFragmentManager.popBackStack()
         }
 
         val btnLogout: Button = view.findViewById(R.id.btnlogout)
