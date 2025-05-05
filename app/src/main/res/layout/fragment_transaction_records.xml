@@ -21,24 +21,25 @@
 
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.354"
-            app:layout_constraintStart_toEndOf="@+id/btnNextMonth"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.408" />
 
         <TextView
             android:id="@+id/txtTimePeriod"
-            android:layout_width="132dp"
-            android:layout_height="56dp"
+            android:layout_width="164dp"
+            android:layout_height="54dp"
+            android:background="@drawable/vector_textbox"
             android:clickable="true"
-            android:text="Month"
-            android:textColor="#283D36"
+            android:fontFamily="@font/chakra_petch_bold"
+            android:gravity="center"
+            android:hint="Month"
             android:textSize="30sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.343" />
+            app:layout_constraintVertical_bias="0.373" />
 
         <Button
             android:id="@+id/btnExpenses"
@@ -117,34 +118,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/rvTransactions" />
-
-        <ImageButton
-            android:id="@+id/btnNextMonth"
-            android:layout_width="55dp"
-            android:layout_height="54dp"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="80dp"
-            android:layout_marginBottom="56dp"
-            android:background="@android:color/transparent"
-            android:scaleX="-1"
-            android:contentDescription="next month"
-            android:src="@drawable/next_month"
-            app:layout_constraintBottom_toTopOf="@+id/rvTransactions"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.285"
-            app:layout_constraintStart_toEndOf="@+id/txtTimePeriod" />
-
-        <ImageButton
-            android:id="@+id/btnPreviousMonth"
-            android:layout_width="60dp"
-            android:layout_height="51dp"
-            android:layout_marginEnd="16dp"
-            android:contentDescription="next_month"
-            android:layout_marginBottom="60dp"
-            android:background="@android:color/transparent"
-            android:src="@drawable/next_month"
-            app:layout_constraintBottom_toTopOf="@+id/rvTransactions"
-            app:layout_constraintEnd_toStartOf="@+id/txtTimePeriod" />
 
         <TextView
             android:id="@+id/tvTransactionsFiltering"
