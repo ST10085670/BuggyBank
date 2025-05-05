@@ -73,29 +73,15 @@ class CreateCategoryFragment : Fragment() {
                 R.id.incomeRadioButton -> Log.d(TAG, "Income selected")
                 else -> Log.d(TAG, "No selection")
             }
-        
-       
-    }
 
-    fun addCategory() {
-        Log.d(TAG, "addCategory")
-        val name = categoryNameInput.text.toString().trim()
-        if (name.isEmpty()) {
-            Toast.makeText(requireContext(), "Please enter a category name.", Toast.LENGTH_SHORT)
-                .show()
-            return
+
         }
-    }
 
-        private fun addCategory() {
+        fun addCategory() {
             Log.d(TAG, "addCategory")
             val name = categoryNameInput.text.toString().trim()
             if (name.isEmpty()) {
-                Toast.makeText(
-                    requireContext(),
-                    "Please enter a category name.",
-                    Toast.LENGTH_SHORT
-                )
+                Toast.makeText(requireContext(), "Please enter a category name.", Toast.LENGTH_SHORT)
                     .show()
                 return
             }
@@ -139,8 +125,6 @@ class CreateCategoryFragment : Fragment() {
         }
     }
 
-}
-    
     private fun addCategory() {
         Log.d(TAG, "addCategory")
         val name = categoryNameInput.text.toString().trim()
