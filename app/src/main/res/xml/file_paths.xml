@@ -3,4 +3,5 @@
     <external-files-path
         name="my_documents"
         path="Documents/" />
+    <files-path name="images" path="Receipt_images/" />
 </paths>
