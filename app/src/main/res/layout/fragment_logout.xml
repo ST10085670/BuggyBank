@@ -5,8 +5,7 @@
     android:layout_width="340dp"
     android:layout_height="500dp"
     tools:context=".logoutFragment"
-    android:layout_gravity="center"
-    android:background="@drawable/biggerbackground">
+    android:layout_gravity="center">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="340dp"
@@ -18,16 +17,17 @@
             android:layout_width="300dp"
             android:layout_height="74dp"
             android:layout_marginTop="156dp"
-            android:backgroundTint="@color/green"
-            android:fontFamily="@font/chakra_petch_bold"
             android:text="Logout"
-            android:textSize="26dp"
+            android:textSize="26sp"
+            android:backgroundTint="@color/light_green"
+            android:fontFamily="@font/chakra_petch_bold"
+            android:textAlignment="center"
+            android:textColor="@color/black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.5" />
+            app:layout_constraintVertical_bias="0.496" />
 
         <Button
             android:id="@+id/cancelBtn"

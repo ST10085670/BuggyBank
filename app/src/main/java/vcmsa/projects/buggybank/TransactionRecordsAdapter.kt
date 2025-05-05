@@ -19,6 +19,7 @@ class TransactionRecordsAdapter(private val transactions: List<Transaction>) :
         val tvAmount: TextView = itemView.findViewById(R.id.tvAmount)
         val tvDate: TextView = itemView.findViewById(R.id.tvDate)
 
+
         // Uncomment when you want to add the expanded view of the transactions
         // val tvTransactionType: TextView = itemView.findViewById(R.id.tvTransactionType)
         // val tvDescription: TextView = itemView.findViewById(R.id.tvDescription)
@@ -41,7 +42,9 @@ class TransactionRecordsAdapter(private val transactions: List<Transaction>) :
         holder.tvCategory.text = transaction.category
         holder.tvPaymentMethod.text = transaction.paymentMethod
         holder.tvAmount.text = transaction.amount.toString()
-        holder.tvDate.text = transaction.dateOfTransaction.toString()
+        holder.tvDate.text = transaction.date.toString()
+
+
 
         // Uncomment when you want to add the expanded view of the transactions
         // holder.tvTransactionType.text = transaction.transactionType
@@ -58,6 +61,13 @@ class TransactionRecordsAdapter(private val transactions: List<Transaction>) :
             notifyItemChanged(position)
         }
         */
+
+        val context = holder.itemView.context
+        if (transaction.type.equals("Income", true)) {
+            holder.tvAmount.setTextColor(context.getColor(R.color.green))
+        } else {
+            holder.tvAmount.setTextColor(context.getColor(R.color.red))
+        }
     }
 
     override fun getItemCount(): Int = transactions.size
