@@ -5,7 +5,6 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +14,8 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -35,18 +36,36 @@ class CreateTransactionFragment : Fragment() {
     private lateinit var imagePreview: ImageView
     private var imageUri: Uri? = null
     
+    private val storage = Firebase.storage.reference
     private val galleryLauncher =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             uri?.let {
-                imageUri = it
-                imagePreview.setImageURI(it)
+                val filename = UUID.randomUUID().toString()
+                val imageRef = storage.child("images/$filename")
+                imageRef.putFile(it).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        imageRef.downloadUrl.addOnCompleteListener { uri ->
+                            imageUri = uri.result
+                            imagePreview.setImageURI(imageUri)
+                        }
+                    }
+                }
             }
         }
     
     private val cameraLauncher =
         registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
             if (success && imageUri != null) {
-                imagePreview.setImageURI(imageUri)
+                val filename = UUID.randomUUID().toString()
+                val imageRef = storage.child("images/$filename")
+                imageRef.putFile(imageUri!!).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        imageRef.downloadUrl.addOnCompleteListener { uri ->
+                            imageUri = uri.result
+                            imagePreview.setImageURI(imageUri)
+                        }
+                    }
+                }
             }
         }
     
@@ -111,7 +130,7 @@ class CreateTransactionFragment : Fragment() {
         val amount = etAmount.text.toString().toDoubleOrNull() ?: 0.0
         val category = spCategory.selectedItem as String
         val payment = spPayment.selectedItem as String
-        val date = etDate.text.toString()
+        val dateOfTransaction = etDate.text.toString()
         val start = etStartTime.text.toString()
         val end = etEndTime.text.toString()
         val desc = etDescription.text.toString().trim()
@@ -120,11 +139,11 @@ class CreateTransactionFragment : Fragment() {
             Toast.makeText(requireContext(), "Invalid selection", Toast.LENGTH_SHORT).show()
             return
         }
-        if (title.isEmpty() || amount <= 0.0 || date.isEmpty()) {
+        if (title.isEmpty() || amount <= 0.0 || dateOfTransaction.isEmpty()) {
             Toast.makeText(requireContext(), "Please fill Title, Amount & Date", Toast.LENGTH_SHORT).show()
             return
         }
-        val transaction = Expense(title, type, amount, category, payment, date, start, end, desc, imageUri?.toString())
+        val transaction = Expense(title, type, amount, category, payment, dateOfTransaction, start, end, desc, imageUri?.toString())
         
         val uid = FirebaseAuth.getInstance().currentUser?.uid
         if (uid == null) {

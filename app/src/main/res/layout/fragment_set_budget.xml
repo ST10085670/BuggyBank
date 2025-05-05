@@ -133,6 +133,7 @@
         android:layout_marginBottom="40dp"
         android:backgroundTint="@color/light_green"
         android:fontFamily="@font/chakra_petch_bold"
+
         android:gravity="center"
         android:text="Internet"
         android:textAlignment="center"
@@ -287,9 +288,11 @@
         android:fontFamily="@font/chakra_petch"
         android:text="CATEGORIES"
         android:textSize="14sp"
+        android:textStyle="bold"
+        android:gravity="center"
         app:layout_constraintBottom_toTopOf="@+id/btnEntertainment"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.072"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />

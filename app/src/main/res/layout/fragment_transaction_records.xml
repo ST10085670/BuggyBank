@@ -14,27 +14,31 @@
 
         <TextView
             android:id="@+id/SortCategory"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@drawable/rounded_analytics_24"
+            android:layout_width="51dp"
+            android:layout_height="40dp"
+            android:background="@drawable/filter_button"
+            android:scaleX="-1"
+
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.909"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintHorizontal_bias="0.354"
+            app:layout_constraintStart_toEndOf="@+id/btnNextMonth"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.39" />
+            app:layout_constraintVertical_bias="0.408" />
 
         <TextView
-            android:id="@+id/textMonth"
+            android:id="@+id/txtTimePeriod"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:clickable="true"
             android:text="Month"
+            android:textColor="#283D36"
             android:textSize="30sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.385" />
+            app:layout_constraintVertical_bias="0.343" />
 
         <Button
             android:id="@+id/btnExpenses"
@@ -68,7 +72,7 @@
             app:layout_constraintHorizontal_bias="0.058"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.303" />
+            app:layout_constraintVertical_bias="0.262" />
 
         <Button
             android:id="@+id/btnAll"
@@ -97,9 +101,10 @@
             app:layout_constraintHorizontal_bias="0.545"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.808" >
+            app:layout_constraintVertical_bias="0.808">
 
-            </androidx.recyclerview.widget.RecyclerView>
+        </androidx.recyclerview.widget.RecyclerView>
+
         <TextView
             android:id="@+id/tvNoTransactions"
             android:layout_width="wrap_content"
@@ -113,6 +118,34 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/rvTransactions" />
 
+        <ImageButton
+            android:id="@+id/btnNextMonth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="80dp"
+            android:layout_marginBottom="72dp"
+            android:background="@android:color/transparent"
+            android:scaleX="-1"
+            android:src="@drawable/next_month"
+            app:layout_constraintBottom_toTopOf="@+id/rvTransactions"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.945"
+            app:layout_constraintStart_toEndOf="@+id/txtTimePeriod" />
+
+        <ImageButton
+            android:id="@+id/btnPreviousMonth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="80dp"
+            android:layout_marginEnd="17dp"
+            android:layout_marginBottom="72dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/next_month"
+            app:layout_constraintBottom_toTopOf="@+id/rvTransactions"
+            app:layout_constraintEnd_toStartOf="@+id/txtTimePeriod"
+            app:layout_constraintHorizontal_bias="0.0"
+
         <TextView
             android:id="@+id/tvTransactionsFiltering"
             android:layout_width="wrap_content"
@@ -125,6 +158,7 @@
             android:textSize="25sp"
             app:layout_constraintBottom_toTopOf="@+id/btnAll"
             app:layout_constraintEnd_toEndOf="parent"
+
             app:layout_constraintStart_toStartOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

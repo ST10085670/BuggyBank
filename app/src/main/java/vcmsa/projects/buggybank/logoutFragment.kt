@@ -7,9 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
-import androidx.fragment.app.DialogFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import androidx.fragment.app.DialogFragment
+
 
 
 class logoutFragment : DialogFragment() {
@@ -25,17 +26,19 @@ class logoutFragment : DialogFragment() {
         btnCancel.setOnClickListener {
             val dbRef = FirebaseDatabase.getInstance().getReference("users")
                 .child(FirebaseAuth.getInstance().currentUser!!.uid)
-            val intent = Intent(context, MainActivity::class.java)
+            val intent = Intent(context, MainPageFragment::class.java)
             startActivity(intent)
             dismiss()
         }
 
         val btnLogout: Button = view.findViewById(R.id.btnlogout)
         btnLogout.setOnClickListener {
-            FirebaseAuth.getInstance().signOut()
+            val auth = FirebaseAuth.getInstance()
+            val userId = auth.currentUser?.uid ?: throw Exception("User ID is null after sign-in")
             val dbRef = FirebaseDatabase.getInstance().getReference("users")
                 .child(FirebaseAuth.getInstance().currentUser!!.uid)
-            dbRef.child("signedIn").setValue(false)
+            dbRef.child(userId).child("signedIn").setValue(false)
+            FirebaseAuth.getInstance().signOut()
             Toast.makeText(context, "Logged out", Toast.LENGTH_SHORT).show()
             val intent = Intent(context, Sign_in::class.java)
             startActivity(intent)

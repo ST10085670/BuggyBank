@@ -10,14 +10,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.coroutines.Dispatchers
@@ -146,8 +143,8 @@ class ReportFragment : Fragment() {
                 it.category,
                 it.paymentMethod,
                 "R${"%.2f".format(it.amount)}",
-                it.dateOfTransaction,
-                it.transactionType,
+                it.date,
+                it.type,
                 it.startTime,
                 it.endTime,
                 it.description
