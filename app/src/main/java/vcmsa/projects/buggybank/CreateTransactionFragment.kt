@@ -5,6 +5,7 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import java.io.File
+import java.text.NumberFormat
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -52,21 +55,30 @@ class CreateTransactionFragment : Fragment() {
                 }
             }
         }
-    
+
+    private val requestCameraPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                takePhoto()
+            } else {
+                Toast.makeText(requireContext(), "Camera permission is required to take photos", Toast.LENGTH_SHORT).show()
+            }
+        }
     private val cameraLauncher =
         registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
             if (success && imageUri != null) {
+                imagePreview.setImageURI(imageUri)
                 val filename = UUID.randomUUID().toString()
                 val imageRef = storage.child("images/$filename")
                 imageRef.putFile(imageUri!!).addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         imageRef.downloadUrl.addOnCompleteListener { uri ->
                             imageUri = uri.result
-                            imagePreview.setImageURI(imageUri)
                         }
                     }
                 }
             }
+
         }
     
     override fun onCreateView(
@@ -101,7 +113,8 @@ class CreateTransactionFragment : Fragment() {
             android.R.layout.simple_spinner_dropdown_item,
             listOf("Select", "Expense", "Income")
         )
-        
+
+
         spCategory.adapter = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_spinner_dropdown_item,
@@ -127,7 +140,16 @@ class CreateTransactionFragment : Fragment() {
     private fun saveTransaction() {
         val title = etTitle.text.toString().trim()
         val type = spType.selectedItem as String
-        val amount = etAmount.text.toString().toDoubleOrNull() ?: 0.0
+        val rawAmount = etAmount.text.toString()
+        val parsedAmount = try {
+            NumberFormat.getInstance(Locale.US).parse(rawAmount)?.toDouble() ?: 0.0
+        } catch (e: ParseException) {
+            Toast.makeText(requireContext(), "Invalid amount format", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val amount = parsedAmount
+
         val category = spCategory.selectedItem as String
         val payment = spPayment.selectedItem as String
         val dateOfTransaction = etDate.text.toString()
@@ -191,19 +213,31 @@ class CreateTransactionFragment : Fragment() {
             true
         ).show()
     }
-    
+
     private fun showImagePickerDialog() {
         val options = arrayOf("Take Photo", "Choose from Gallery")
         AlertDialog.Builder(requireContext())
             .setTitle("Add Image")
             .setItems(options) { _, which ->
                 when (which) {
-                    0 -> takePhoto()
+                    0 -> {
+                        // Check for camera permission
+                        if (androidx.core.content.ContextCompat.checkSelfPermission(
+                                requireContext(),
+                                android.Manifest.permission.CAMERA
+                            ) != android.content.pm.PackageManager.PERMISSION_GRANTED
+                        ) {
+                            requestCameraPermissionLauncher.launch(android.Manifest.permission.CAMERA)
+                        } else {
+                            takePhoto()
+                        }
+                    }
                     1 -> pickFromGallery()
                 }
             }.show()
     }
-    
+
+
     private fun pickFromGallery() {
         galleryLauncher.launch("image/*")
     }
@@ -216,22 +250,30 @@ class CreateTransactionFragment : Fragment() {
                 "${requireContext().packageName}.fileprovider",
                 it
             )
+
             cameraLauncher.launch(imageUri)
         }
     }
-    
+
     private fun createImageFile(): File? {
         return try {
             val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-            val storageDir = File(requireContext().filesDir, "transaction_images")
+            val storageDir = File(requireContext().filesDir, "Receipt_images")
             if (!storageDir.exists()) storageDir.mkdirs()
-            File.createTempFile("IMG_$timestamp", ".jpg", storageDir)
+
+            val photoFile = File.createTempFile("IMG_$timestamp", ".jpg", storageDir)
+
+            Log.d("DEBUG", "File exists: ${photoFile.exists()} at ${photoFile.absolutePath}")
+
+            photoFile
         } catch (e: Exception) {
             e.printStackTrace()
             null
         }
     }
-    
+
+
+
     private fun clearForm() {
         etTitle.text.clear()
         etAmount.text.clear()

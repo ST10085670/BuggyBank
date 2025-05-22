@@ -8,7 +8,6 @@
     android:id="@+id/transactionRecords"
     android:background="@drawable/background_app">
 
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -22,61 +21,76 @@
 
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.354"
-            app:layout_constraintStart_toEndOf="@+id/btnNextMonth"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.408" />
 
         <TextView
             android:id="@+id/txtTimePeriod"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="164dp"
+            android:layout_height="54dp"
+            android:background="@drawable/vector_textbox"
             android:clickable="true"
-            android:text="Month"
-            android:textColor="#283D36"
+            android:fontFamily="@font/chakra_petch_bold"
+            android:gravity="center"
+            android:hint="Month"
             android:textSize="30sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.343" />
+            app:layout_constraintVertical_bias="0.373" />
 
         <Button
             android:id="@+id/btnExpenses"
-            android:layout_width="120dp"
+            android:layout_width="130dp"
             android:layout_height="50dp"
+            android:backgroundTint="@color/dark_green"
+            android:fontFamily="@font/chakra_petch_bold"
             android:text="EXPENSES"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.926"
+            app:layout_constraintHorizontal_bias="0.939"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.262" />
+            app:layout_constraintVertical_bias="0.265" />
 
         <Button
             android:id="@+id/btnIncomes"
-            android:layout_width="120dp"
+            android:layout_width="130dp"
             android:layout_height="50dp"
-            android:text="INCOMES  "
             android:backgroundTint="@color/dark_green"
+            android:fontFamily="@font/chakra_petch_bold"
+            android:text="INCOMES  "
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.058"
+            app:layout_constraintHorizontal_bias="0.053"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.262" />
+            app:layout_constraintVertical_bias="0.265" />
 
         <Button
             android:id="@+id/btnAll"
-            android:layout_width="100dp"
+            android:layout_width="80dp"
             android:layout_height="50dp"
+            android:backgroundTint="@color/light_green"
+            android:fontFamily="@font/chakra_petch_bold"
             android:text="ALL"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintHorizontal_bias="0.511"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.262" />
+            app:layout_constraintVertical_bias="0.265" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvTransactions"
@@ -105,33 +119,19 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/rvTransactions" />
 
-        <ImageButton
-            android:id="@+id/btnNextMonth"
+        <TextView
+            android:id="@+id/tvTransactionsFiltering"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="80dp"
-            android:layout_marginBottom="72dp"
-            android:background="@android:color/transparent"
-            android:scaleX="-1"
-            android:src="@drawable/next_month"
-            app:layout_constraintBottom_toTopOf="@+id/rvTransactions"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.945"
-            app:layout_constraintStart_toEndOf="@+id/txtTimePeriod" />
+            android:layout_marginBottom="28dp"
+            android:fontFamily="@font/chakra_petch_bold"
+            android:text="Transaction filtering"
 
-        <ImageButton
-            android:id="@+id/btnPreviousMonth"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="80dp"
-            android:layout_marginEnd="17dp"
-            android:layout_marginBottom="72dp"
-            android:background="@android:color/transparent"
-            android:src="@drawable/next_month"
-            app:layout_constraintBottom_toTopOf="@+id/rvTransactions"
-            app:layout_constraintEnd_toStartOf="@+id/txtTimePeriod"
-            app:layout_constraintHorizontal_bias="0.0"
+            android:textAllCaps="true"
+            android:textSize="25sp"
+            app:layout_constraintBottom_toTopOf="@+id/btnAll"
+            app:layout_constraintEnd_toEndOf="parent"
+
             app:layout_constraintStart_toStartOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

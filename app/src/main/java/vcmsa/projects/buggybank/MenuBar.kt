@@ -1,5 +1,6 @@
 package vcmsa.projects.buggybank
 
+import SetBudgetFragment
 import android.content.Intent
 import android.graphics.Paint
 import android.graphics.pdf.PdfDocument
@@ -15,6 +16,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
@@ -22,6 +24,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.transition.Visibility
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.launch
 import com.google.android.material.navigation.NavigationView
@@ -132,7 +135,7 @@ class MenuBar : AppCompatActivity() {
                         FragTransactionRecords.view?.postDelayed({ FragTransactionRecords.view?.startAnimation(fadeIn) }, 150)
                         replaceFrag(FragTransactionRecords)
                     }
-                    R.id.ic_trophies -> replaceFrag(FragDashboard)
+                    R.id.ic_trophies -> Toast.makeText(this, "Trophies coming soon", Toast.LENGTH_LONG).show()
                 }
 
             true
@@ -140,6 +143,7 @@ class MenuBar : AppCompatActivity() {
 
         //Side nav menu bar code
         navToggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
+        navToggle.drawerArrowDrawable.color = ContextCompat.getColor(this, R.color.dark_green)
         drawerLayout.addDrawerListener(navToggle)
         navToggle.syncState()
 
@@ -237,11 +241,32 @@ class MenuBar : AppCompatActivity() {
                 } else if (supportFragmentManager.backStackEntryCount > 0) {
                     supportFragmentManager.popBackStack()
                 } else {
-                    // If you want the app to exit here, call finish()
+
                     finish()
                 }
             }
         })
+
+        supportFragmentManager.addOnBackStackChangedListener {
+            val currentFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView)
+
+            val bottomBar = findViewById<BottomNavigationView>(R.id.NavBar)
+
+            when (currentFragment) {
+                is MainPageFragment -> bottomBar.menu.findItem(R.id.ic_home).isChecked = true
+                is AnalysisFragment -> bottomBar.menu.findItem(R.id.ic_analysis).isChecked = true
+                is TransactionRecords -> bottomBar.menu.findItem(R.id.ic_transactions).isChecked = true
+
+            }
+
+
+            val btnBack = findViewById<ImageButton>(R.id.btnBack)
+            if (currentFragment is MainPageFragment) {
+                btnBack.visibility = ImageButton.GONE
+            } else {
+                btnBack.visibility = ImageButton.VISIBLE
+            }
+        }
 
     }
 
@@ -262,6 +287,15 @@ class MenuBar : AppCompatActivity() {
             transaction.replace(R.id.fragmentContainerView, fragment)
                 .addToBackStack(null) // Adds new  page to the back stack
                 .commit()
+        }
+
+        supportFragmentManager.executePendingTransactions()
+
+        val btnBack = findViewById<ImageButton>(R.id.btnBack)
+        if (fragment == FragDashboard) {
+            btnBack.visibility = ImageButton.GONE
+        } else {
+            btnBack.visibility = ImageButton.VISIBLE
         }
     }
 

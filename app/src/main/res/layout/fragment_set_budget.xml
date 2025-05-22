@@ -9,11 +9,13 @@
 
     <TextView
         android:id="@+id/txtSetBudget"
-        android:layout_width="159dp"
+        android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:fontFamily="@font/chakra_petch_bold"
         android:text="Set a Budget"
-        android:textSize="24sp"
+
+        android:textAllCaps="true"
+        android:textSize="25sp"
         app:layout_constraintBottom_toTopOf="@+id/txtCategoriesHeading"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.517"
@@ -42,6 +44,7 @@
         android:layout_marginBottom="8dp"
         android:hint="Enter max value"
         android:inputType="number"
+        android:background="@drawable/vector_textbox"
         app:layout_constraintBottom_toTopOf="@+id/seekBarMin"
         app:layout_constraintEnd_toStartOf="@+id/btnSetMax"
         app:layout_constraintHorizontal_bias="0.8"
@@ -52,8 +55,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
+        android:text="Define"
         android:backgroundTint="@color/dark_green"
-        android:text="Set Max Value"
+        android:fontFamily="@font/chakra_petch_bold"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="14sp"
         app:layout_constraintBottom_toTopOf="@+id/seekBarMin"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -61,10 +68,13 @@
         android:id="@+id/btnSet"
         android:layout_width="300dp"
         android:layout_height="50dp"
-        android:layout_marginBottom="100dp"
-        android:backgroundTint="@color/green"
+        android:layout_marginBottom="124dp"
+        android:backgroundTint="@color/dark_green"
+        android:fontFamily="@font/chakra_petch_bold"
         android:text="Set"
-        android:textSize="16sp"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.494"
@@ -84,97 +94,36 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/btnEntertainment"
-        android:layout_width="118dp"
-        android:layout_height="48dp"
-        android:layout_marginBottom="12dp"
-        android:backgroundTint="@color/green"
-        android:gravity="center"
-        android:text="Entertainment"
-        android:textSize="10sp"
-        app:layout_constraintBottom_toTopOf="@+id/btnFood"
-        app:layout_constraintEnd_toStartOf="@+id/btnHousing"
-        app:layout_constraintHorizontal_bias="0.615"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/btnGroceries"
-        android:layout_width="118dp"
-        android:layout_height="48dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginBottom="20dp"
-        android:backgroundTint="@color/green"
-        android:gravity="center"
-        android:text="Groceries"
-        android:textSize="13sp"
-        app:layout_constraintBottom_toTopOf="@+id/txtAddCategoriesHeading"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <Button
-        android:id="@+id/btnInsurance"
-        android:layout_width="118dp"
-        android:layout_height="48dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="24dp"
-        android:backgroundTint="@color/green"
-        android:gravity="center"
-        android:text="Insurance"
-        android:textSize="13sp"
-        app:layout_constraintBottom_toTopOf="@+id/btnInternet"
-        app:layout_constraintEnd_toStartOf="@+id/btnFuel" />
-
-    <Button
-        android:id="@+id/btnFuel"
-        android:layout_width="118dp"
-        android:layout_height="48dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginBottom="24dp"
-        android:backgroundTint="@color/green"
-        android:gravity="center"
-        android:text="Fuel"
-        android:textSize="13sp"
-        app:layout_constraintBottom_toTopOf="@+id/btnGroceries"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <Button
         android:id="@+id/btnHousing"
         android:layout_width="118dp"
         android:layout_height="48dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="12dp"
-        android:backgroundTint="@color/green"
+        android:layout_marginBottom="4dp"
+        android:backgroundTint="@color/light_green"
+        android:fontFamily="@font/chakra_petch_bold"
         android:gravity="center"
         android:text="Housing"
+        android:textAlignment="center"
+        android:textColor="@color/black"
         android:textSize="13sp"
         app:layout_constraintBottom_toTopOf="@+id/btnInsurance"
         app:layout_constraintEnd_toStartOf="@+id/btnClothing" />
 
     <Button
-        android:id="@+id/btnHealth"
-        android:layout_width="118dp"
+        android:id="@+id/btnEntertainment"
+        android:layout_width="120dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="20dp"
-        android:backgroundTint="@color/green"
+        android:layout_marginBottom="4dp"
+        android:backgroundTint="@color/light_green"
+        android:fontFamily="@font/chakra_petch_bold"
         android:gravity="center"
-        android:text="Health"
-        android:textSize="13sp"
-        app:layout_constraintBottom_toTopOf="@+id/txtAddCategoriesHeading"
-        app:layout_constraintEnd_toStartOf="@+id/btnInternet"
-        app:layout_constraintHorizontal_bias="0.653"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/btnFood"
-        android:layout_width="118dp"
-        android:layout_height="48dp"
-        android:layout_marginBottom="24dp"
-        android:backgroundTint="@color/green"
-        android:gravity="center"
-        android:text="Food"
-        android:textSize="13sp"
-        app:layout_constraintBottom_toTopOf="@+id/btnHealth"
-        app:layout_constraintEnd_toStartOf="@+id/btnInsurance"
-        app:layout_constraintHorizontal_bias="0.615"
+        android:text="Entertainment"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toTopOf="@+id/btnFood"
+        app:layout_constraintEnd_toStartOf="@+id/btnHousing"
+        app:layout_constraintHorizontal_bias="0.625"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
@@ -182,26 +131,117 @@
         android:layout_width="118dp"
         android:layout_height="48dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="20dp"
-        android:backgroundTint="@color/green"
+        android:layout_marginBottom="40dp"
+        android:backgroundTint="@color/light_green"
+        android:fontFamily="@font/chakra_petch_bold"
+
         android:gravity="center"
         android:text="Internet"
+        android:textAlignment="center"
+        android:textColor="@color/black"
         android:textSize="13sp"
         app:layout_constraintBottom_toTopOf="@+id/txtAddCategoriesHeading"
         app:layout_constraintEnd_toStartOf="@+id/btnGroceries" />
+
+    <Button
+        android:id="@+id/btnFuel"
+        android:layout_width="118dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="@color/light_green"
+        android:fontFamily="@font/chakra_petch_bold"
+        android:gravity="center"
+        android:text="Fuel"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toTopOf="@+id/btnGroceries"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/btnFood"
+        android:layout_width="118dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="@color/light_green"
+        android:fontFamily="@font/chakra_petch_bold"
+        android:gravity="center"
+        android:text="Food"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toTopOf="@+id/btnHealth"
+        app:layout_constraintEnd_toStartOf="@+id/btnInsurance"
+        app:layout_constraintHorizontal_bias="0.615"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/btnInsurance"
+        android:layout_width="118dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="@color/light_green"
+        android:fontFamily="@font/chakra_petch_bold"
+        android:gravity="center"
+        android:text="Insurance"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toTopOf="@+id/btnInternet"
+        app:layout_constraintEnd_toStartOf="@+id/btnFuel" />
 
     <Button
         android:id="@+id/btnClothing"
         android:layout_width="118dp"
         android:layout_height="48dp"
         android:layout_marginEnd="4dp"
-        android:layout_marginBottom="12dp"
-        android:backgroundTint="@color/green"
+        android:layout_marginBottom="4dp"
+        android:backgroundTint="@color/light_green"
+
+        android:fontFamily="@font/chakra_petch_bold"
         android:gravity="center"
         android:text="Clothing"
+        android:textAlignment="center"
+        android:textColor="@color/black"
         android:textSize="13sp"
         app:layout_constraintBottom_toTopOf="@+id/btnFuel"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/btnGroceries"
+        android:layout_width="118dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="40dp"
+        android:backgroundTint="@color/light_green"
+        android:fontFamily="@font/chakra_petch_bold"
+        android:gravity="center"
+        android:text="Groceries"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toTopOf="@+id/txtAddCategoriesHeading"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/btnHealth"
+        android:layout_width="118dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="40dp"
+        android:backgroundTint="@color/light_green"
+        android:fontFamily="@font/chakra_petch_bold"
+        android:gravity="center"
+        android:text="Health"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="13sp"
+
+        app:layout_constraintBottom_toTopOf="@+id/txtAddCategoriesHeading"
+        app:layout_constraintEnd_toStartOf="@+id/btnInternet"
+        app:layout_constraintHorizontal_bias="0.653"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <SeekBar
         android:id="@+id/seekBarMin"
