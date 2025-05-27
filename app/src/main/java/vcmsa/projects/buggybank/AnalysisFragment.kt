@@ -35,7 +35,7 @@ class AnalysisFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         chart = view.findViewById(R.id.statusBar)
         database = FirebaseDatabase.getInstance().reference
-        analyzeDummyData()
+        analyzeData()
         loadChartData()
     }
 
@@ -104,7 +104,7 @@ class AnalysisFragment : Fragment() {
     }
 
 
-    private fun analyzeDummyData() {
+    private fun analyzeData() {
         val currentUser = FirebaseAuth.getInstance().currentUser
         if (currentUser == null) {
             Log.e("Firebase", "User not logged in.")
@@ -112,8 +112,8 @@ class AnalysisFragment : Fragment() {
         }
 
         val userId = currentUser.uid
-
         val transactionsRef = FirebaseDatabase.getInstance().getReference("users/$userId/transactions")
+
         val expensesByCategory = mutableMapOf<String, Double>()
         var totalExpenses = 0.0
         var totalIncome = 0.0
@@ -126,13 +126,13 @@ class AnalysisFragment : Fragment() {
 
             for (transactionSnap in snapshot.children) {
                 val type = transactionSnap.child("type").getValue(String::class.java)
-                val title = transactionSnap.child("title").getValue(String::class.java)
+                val category = transactionSnap.child("category").getValue(String::class.java)
                 val amount = transactionSnap.child("amount").getValue(Double::class.java) ?: 0.0
 
                 when (type) {
                     "Expense" -> {
-                        expensesByCategory[title ?: "Unknown"] =
-                            expensesByCategory.getOrDefault(title ?: "Unknown", 0.0) + amount
+                        val cat = category ?: "Unknown"
+                        expensesByCategory[cat] = expensesByCategory.getOrDefault(cat, 0.0) + amount
                         totalExpenses += amount
                     }
                     "Income" -> {
@@ -141,36 +141,18 @@ class AnalysisFragment : Fragment() {
                 }
             }
 
-            // Simulate current month data to compare
-            val currentMonthExpenses = mapOf(
-                "Food" to 1000f,
-                "Transport" to 400f,
-                "Entertainment" to 800f
-            )
+            // Determine the category with the highest total expense
+            val highestExpenseCategory = expensesByCategory.maxByOrNull { it.value }?.key ?: "N/A"
 
-            val savingsMap = mutableMapOf<String, Float>()
-            val overspentMap = mutableMapOf<String, Float>()
-
-            for ((category, lastMonthAmount) in expensesByCategory) {
-                val currentAmount = currentMonthExpenses[category] ?: 0f
-                val diff = lastMonthAmount.toFloat() - currentAmount
-                if (diff > 0) {
-                    savingsMap[category] = diff
-                } else if (diff < 0) {
-                    overspentMap[category] = -diff
-                }
-            }
-
-            val savedMost = savingsMap.maxByOrNull { it.value }?.key ?: "N/A"
-            // val overspentMost = overspentMap.maxByOrNull { it.value }?.key ?: "N/A"
-
-            //  Display in TextViews
+            // Display results in TextViews
             view?.findViewById<TextView>(R.id.txtTotalExpensesData)?.text = "R %.2f".format(totalExpenses)
             view?.findViewById<TextView>(R.id.txtTotalIncomeData)?.text = "R %.2f".format(totalIncome)
-            // view?.findViewById<TextView>(R.id.txtOverspentData)?.text = overspentMost
+            view?.findViewById<TextView>(R.id.txtHighestExpenseData)?.text = highestExpenseCategory
 
+            // Logging
             Log.d("Analysis", "Total Expenses: R $totalExpenses")
             Log.d("Analysis", "Total Income: R $totalIncome")
+            Log.d("Analysis", "Highest Expense Category: $highestExpenseCategory")
 
         }.addOnFailureListener {
             Log.e("Analysis", "Failed to load transactions: ${it.message}")
