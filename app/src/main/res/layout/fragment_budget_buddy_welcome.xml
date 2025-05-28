@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/back"
     tools:context=".BudgetBuddyWelcomeFragment">
 
     <!--   <Button
@@ -42,7 +43,7 @@
         android:id="@+id/txtBuggyBank"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:layout_marginTop="124dp"
+        android:layout_marginTop="88dp"
         android:fontFamily="@font/chakra_petch_bold"
         android:text="Budget Buddy"
         android:textAllCaps="true"
@@ -57,13 +58,14 @@
         android:layout_width="317dp"
         android:layout_height="386dp"
         android:layout_marginTop="24dp"
+        android:contentDescription="Add a budget buddy"
         android:onClick="addBudgetBuddyPopUp"
-        android:src="@drawable/baseline_person_add_alt_1_24"
+        android:src="@drawable/round_person_add_alt_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtInfoToAddABuddy"
-        app:layout_constraintVertical_bias="0.01" />
+        app:layout_constraintVertical_bias="0.387" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
