@@ -42,6 +42,7 @@ private val FragCalculator = CalculatorFragment()
 private val FragCurrencyConvertor = CurrencyConverterFragment()
 //private val FragSettings = SettingsFragment()
 private val FragLogout = logoutFragment()
+private val FragBudgetBuddyWelcome = BudgetBuddyWelcomeFragment()
 
 
 class MenuBar : AppCompatActivity() {
@@ -179,6 +180,20 @@ class MenuBar : AppCompatActivity() {
                         FragReport.view?.startAnimation(fadeOut)
                         FragReport.view?.postDelayed({ FragReport.view?.startAnimation(fadeIn) }, 150)
                         replaceFrag(FragReport)
+                    }
+                    R.id.is_budgetBuddy -> {
+                        val fadeOut = AlphaAnimation(1f, 0f).apply {
+                            duration = 150
+                            fillAfter = true
+                        }
+                        val fadeIn = AlphaAnimation(0f, 1f).apply {
+                            duration = 150
+                            fillAfter = true
+                            startOffset = 150
+                        }
+                        FragReport.view?.startAnimation(fadeOut)
+                        FragReport.view?.postDelayed({ FragReport.view?.startAnimation(fadeIn) }, 150)
+                        replaceFrag(FragBudgetBuddyWelcome)
                     }
                     R.id.is_calculator -> {
                         val fadeOut = AlphaAnimation(1f, 0f).apply {
