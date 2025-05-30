@@ -11,10 +11,12 @@ import android.view.ViewGroup
 import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.transactionrecords.TransactionRecordsAdapter
+import com.google.android.material.search.SearchBar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -44,10 +46,12 @@ class TransactionRecords : Fragment() {
     private lateinit var btnIncome: TextView
     private lateinit var btnExpense: TextView
 
+    private lateinit var searchBar : SearchView
 
     private val TAG = "TransactionRecords"
     private lateinit var sortCategory: TextView
     private val filteredTransactions = ArrayList<Transaction>()
+    private val itemRecords = ArrayList <Transaction>()
 
 
     override fun onCreateView(
@@ -65,6 +69,26 @@ class TransactionRecords : Fragment() {
         btnAll = layout.findViewById(R.id.btnAll)
         btnIncome = layout.findViewById(R.id.btnIncomes)
         btnExpense = layout.findViewById(R.id.btnExpenses)
+
+        searchBar = layout.findViewById(R.id.searchBar)
+        searchBar.isIconified = false
+        searchBar.queryHint = "Search..."
+        searchBar.setQuery("", false)
+
+        searchBar.clearFocus() //this removes the cursor from the search bar when fragment loads
+
+
+        searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                filterRecords(newText ?: "")
+                return true
+            }
+        })
+
 
         adapter = TransactionRecordsAdapter(transactions)
         transactionsList.adapter = adapter
@@ -271,4 +295,31 @@ class TransactionRecords : Fragment() {
 
         popupMenu.show()
     }
+    private fun filterRecords(text: String) {
+        val searchText = text.lowercase()
+        val filteredRecords = mutableListOf<Transaction>()
+
+        for (item in filteredTransactions) {
+            val matches = item.title.lowercase().contains(searchText) ||
+                    item.category.lowercase().contains(searchText) ||
+                    item.paymentMethod.lowercase().contains(searchText) ||
+                    item.amount.toString().lowercase().contains(searchText) ||
+                    item.date.lowercase().contains(searchText) ||
+                    item.type.lowercase().contains(searchText)
+
+            if (matches) {
+                filteredRecords.add(item)
+            }
+        }
+
+        if (filteredRecords.isEmpty()) {
+            Toast.makeText(requireContext(), "No data found", Toast.LENGTH_SHORT).show()
+        } else {
+            updateDisplayedTransactions(filteredRecords)
+        }
+    }
+
+
+
+
 }

@@ -41,6 +41,7 @@
         android:backgroundTint="@color/dark_green"
         android:fontFamily="@font/chakra_petch_bold"
         android:text="+   Add Wallets"
+        android:textAllCaps="true"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="27sp"
