@@ -5,8 +5,10 @@
     android:id="@+id/popUpFragContainer"
     android:layout_width="350dp"
     android:layout_height="550dp"
+    android:background="@drawable/popfrag"
     android:layout_gravity="center"
-    tools:context=".CreatPopUpFragment">
+    tools:context=".CreatPopUpFragment"
+    >
 
 
     <Button

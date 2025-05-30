@@ -2,8 +2,6 @@ package vcmsa.projects.buggybank
 
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.animation.AnimationUtils
 import android.widget.Toast
@@ -28,29 +26,29 @@ private const val TAG = "SignUpActivity"
 
 @Suppress("DEPRECATION")
 class Sign_up : AppCompatActivity() {
-
+    
     private lateinit var binding: ActivitySignUpBinding
     private lateinit var auth: FirebaseAuth
     
-
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
         auth = Firebase.auth
-
+        
         // Window insets for edge-to-edge content
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.signupPage)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
+        
         // Apply fade in animation to the entire layout
         val fadeInAnimation = AnimationUtils.loadAnimation(this, android.R.anim.fade_in)
         binding.root.startAnimation(fadeInAnimation)
-
+        
         // Handle back button press
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -61,7 +59,7 @@ class Sign_up : AppCompatActivity() {
                 finish()
             }
         })
-
+        
         // Go to sign in page when login button clicked
         binding.SignUpLogin.setOnClickListener {
             Log.d(TAG, "onClick: Going to sign in page")
@@ -77,7 +75,7 @@ class Sign_up : AppCompatActivity() {
             val password = binding.SignUpPassword.text.toString()
             val passwordConfirm = binding.SignUpPasswordConfirm.text.toString()
             val username = binding.username.text.toString()
-            val hashedPassword = sha256(password).toString()
+            val hashedPassword = sha256(password)
             if (email.isNotEmpty() && password.isNotEmpty() && passwordConfirm.isNotEmpty()) {
                 lifecycleScope.launch {
                     try {
@@ -86,7 +84,7 @@ class Sign_up : AppCompatActivity() {
                         val user = result.user
                         if (user != null) {
                             Log.d(TAG, "User created with UID: ${user.uid}")
-
+                            
                             // Save user details to Firebase Realtime Database
                             val db = FirebaseDatabase.getInstance()
                             val usersRef = db.getReference("users")
@@ -100,12 +98,12 @@ class Sign_up : AppCompatActivity() {
                             userRef.child("categories").setValue("null")
                             userRef.child("budgets").setValue("null")
                             userRef.child("reports").setValue("null")
-
+                            
                             val intent = Intent(this@Sign_up, Sign_in::class.java)
                             startActivity(intent)
                             overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
                             finish()
-
+                            
                             Log.d(TAG, "Sign up successful")
                             Toast.makeText(
                                 this@Sign_up,
@@ -147,19 +145,19 @@ class Sign_up : AppCompatActivity() {
             }
         }
     }
-
+    
     private fun sha256(base: String): String {
         try {
             val digest = MessageDigest.getInstance("SHA-256")
             val hash = digest.digest(base.toByteArray(charset("UTF-8")))
             val hexString = StringBuffer()
-
+            
             for (i in hash.indices) {
                 val hex = Integer.toHexString(0xff and hash[i].toInt())
                 if (hex.length == 1) hexString.append('0')
                 hexString.append(hex)
             }
-
+            
             return hexString.toString()
         } catch (ex: java.lang.Exception) {
             throw RuntimeException(ex)
