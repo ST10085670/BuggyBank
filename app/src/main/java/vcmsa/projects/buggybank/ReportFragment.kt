@@ -175,7 +175,7 @@ class ReportFragment : Fragment() {
 
             val uri: Uri = FileProvider.getUriForFile(
                 requireContext(),
-                "${requireContext().packageName}.provider",
+                "${requireContext().packageName}.fileprovider",
                 file
             )
 

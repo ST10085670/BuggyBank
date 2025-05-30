@@ -17,31 +17,36 @@
             android:layout_width="300dp"
             android:layout_height="74dp"
             android:layout_marginTop="156dp"
-            android:text="Logout"
-            android:textSize="26sp"
-            android:backgroundTint="@color/light_green"
+            android:backgroundTint="@color/dark_green"
             android:fontFamily="@font/chakra_petch_bold"
+            android:text="Logout"
             android:textAlignment="center"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
+            android:textSize="26sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.4"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.496" />
+            app:layout_constraintVertical_bias="0.103" />
 
         <Button
             android:id="@+id/cancelBtn"
             android:layout_width="300dp"
             android:layout_height="74dp"
-            android:backgroundTint="@color/dark_green"
+            android:backgroundTint="@android:color/transparent"
             android:fontFamily="@font/chakra_petch_bold"
             android:gravity="center"
             android:text="Cancel"
+            android:textColor="@color/black"
             android:textSize="26sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.4"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.335" />
+            app:layout_constraintVertical_bias="0.732"
+            app:strokeColor="#283D36"
+            app:strokeWidth="3dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

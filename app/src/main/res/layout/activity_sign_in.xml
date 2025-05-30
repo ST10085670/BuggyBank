@@ -15,15 +15,16 @@
         android:id="@+id/Sign_in_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="372dp"
-        android:text="Log in"
+        android:layout_marginTop="352dp"
         android:fontFamily="@font/chakra_petch_bold"
+        android:text="Log in"
 
+        android:textAlignment="center"
         android:textAllCaps="true"
         android:textSize="25sp"
-        android:textAlignment="center"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -113,12 +114,14 @@
             android:layout_width="10dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:text="@string/Register"
-            android:textSize="20sp"
-            android:backgroundTint="@color/light_green"
+            android:backgroundTint="@android:color/transparent"
+            app:strokeColor="#283D36"
+            app:strokeWidth="3dp"
             android:fontFamily="@font/chakra_petch_bold"
+            android:text="@string/Register"
             android:textAlignment="center"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            android:textSize="20sp" />
     </LinearLayout>
 
     <ImageView

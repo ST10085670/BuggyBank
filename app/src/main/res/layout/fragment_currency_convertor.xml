@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/fragmentConvertorContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -35,10 +36,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:text="Convert"
-        android:backgroundTint="@color/green"
+        android:backgroundTint="@color/dark_green"
         android:fontFamily="@font/chakra_petch_bold"
         android:textSize="17dp"
-        android:textColor="@color/black" />
+        android:textColor="@color/white" />
 
     <TextView
         android:id="@+id/tvResult"
@@ -55,9 +56,12 @@
         android:layout_gravity="end"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:backgroundTint="@color/dark_green"
+        android:backgroundTint="@android:color/transparent"
+        app:strokeColor="#283D36"
+        app:strokeWidth="3dp"
         android:fontFamily="@font/chakra_petch"
         android:text="Reset"
+        android:textColor="@color/black"
         android:textSize="18sp"
         />
 </LinearLayout>

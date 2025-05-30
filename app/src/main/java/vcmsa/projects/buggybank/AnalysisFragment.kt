@@ -23,74 +23,6 @@ class AnalysisFragment : Fragment() {
     private lateinit var chart: BarChart
     private lateinit var database: DatabaseReference
 
-    val dummyTransactions = listOf(
-        Transaction(
-            title = "Groceries",
-            category = "Food",
-            paymentMethod = "Card",
-            amount = 1500.0,
-            date = "2025-04-10",
-            type = "Expense",
-            description = "Monthly groceries",
-            startTime = "14:00",
-            endTime = "14:30"
-        ),
-        Transaction(
-            title = "Bus Pass",
-            category = "Transport",
-            paymentMethod = "Cash",
-            amount = 150.0,
-            date = "2025-04-03",
-            type = "Expense",
-            description = "Bus fare for April",
-            startTime = "09:00",
-            endTime = "09:05"
-        ),
-        Transaction(
-            title = "Gym Membership",
-            category = "Health",
-            paymentMethod = "Card",
-            amount = 600.0,
-            date = "2025-04-05",
-            type = "Expense",
-            description = "Monthly gym",
-            startTime = "10:00",
-            endTime = "10:10"
-        ),
-        Transaction(
-            title = "Movie Night",
-            category = "Entertainment",
-            paymentMethod = "Card",
-            amount = 270.0,
-            date = "2025-04-15",
-            type = "Expense",
-            description = "Cinema ticket",
-            startTime = "18:00",
-            endTime = "20:30"
-        ),
-        Transaction(
-            title = "Freelance Project",
-            category = "Work",
-            paymentMethod = "Bank Transfer",
-            amount = 20000.0,
-            date = "2025-04-20",
-            type = "Income",
-            description = "App development job",
-            startTime = "09:00",
-            endTime = "17:00"
-        ),
-        Transaction(
-            title = "Allowance",
-            category = "Personal",
-            paymentMethod = "Cash",
-            amount = 300.0,
-            date = "2025-04-01",
-            type = "Income",
-            description = "Monthly allowance from family",
-            startTime = "08:00",
-            endTime = "08:10"
-        )
-    )
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -103,7 +35,7 @@ class AnalysisFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         chart = view.findViewById(R.id.statusBar)
         database = FirebaseDatabase.getInstance().reference
-        analyzeDummyData()
+        analyzeData()
         loadChartData()
     }
 
@@ -172,51 +104,60 @@ class AnalysisFragment : Fragment() {
     }
 
 
-    private fun analyzeDummyData() {
+    private fun analyzeData() {
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser == null) {
+            Log.e("Firebase", "User not logged in.")
+            return
+        }
+
+        val userId = currentUser.uid
+        val transactionsRef = FirebaseDatabase.getInstance().getReference("users/$userId/transactions")
+
         val expensesByCategory = mutableMapOf<String, Double>()
-        var totalExpenses = 0.00
+        var totalExpenses = 0.0
+        var totalIncome = 0.0
 
-        for (transaction in dummyTransactions) {
-            if (transaction.type == "Expense") {
-                expensesByCategory[transaction.title] =
-                    expensesByCategory.getOrDefault(transaction.title, 0.00) + transaction.amount
-                totalExpenses += transaction.amount
+        transactionsRef.get().addOnSuccessListener { snapshot ->
+            if (!snapshot.exists()) {
+                Log.d("Analysis", "No transaction data found.")
+                return@addOnSuccessListener
             }
-        }
 
-        // Simulate current month data to compare
-        val currentMonthExpenses = mapOf(
-            "Food" to 1000f,
-            "Transport" to 400f,
-            "Entertainment" to 800f
-        )
+            for (transactionSnap in snapshot.children) {
+                val type = transactionSnap.child("type").getValue(String::class.java)
+                val category = transactionSnap.child("category").getValue(String::class.java)
+                val amount = transactionSnap.child("amount").getValue(Double::class.java) ?: 0.0
 
-        // Calculate differences
-        val savingsMap = mutableMapOf<String, Float>()
-        val overspentMap = mutableMapOf<String, Float>()
-
-        for ((category, lastMonthAmount) in expensesByCategory) {
-            val currentAmount = currentMonthExpenses[category] ?: 0f
-            val diff = lastMonthAmount - currentAmount
-            if (diff > 0) {
-                savingsMap[category] = diff.toFloat()
-            } else if (diff < 0) {
-                overspentMap[category] = (-diff).toFloat()
+                when (type) {
+                    "Expense" -> {
+                        val cat = category ?: "Unknown"
+                        expensesByCategory[cat] = expensesByCategory.getOrDefault(cat, 0.0) + amount
+                        totalExpenses += amount
+                    }
+                    "Income" -> {
+                        totalIncome += amount
+                    }
+                }
             }
+
+            // Determine the category with the highest total expense
+            val highestExpenseCategory = expensesByCategory.maxByOrNull { it.value }?.key ?: "N/A"
+
+            // Display results in TextViews
+            view?.findViewById<TextView>(R.id.txtTotalExpensesData)?.text = "R %.2f".format(totalExpenses)
+            view?.findViewById<TextView>(R.id.txtTotalIncomeData)?.text = "R %.2f".format(totalIncome)
+            view?.findViewById<TextView>(R.id.txtHighestExpenseData)?.text = highestExpenseCategory
+
+            // Logging
+            Log.d("Analysis", "Total Expenses: R $totalExpenses")
+            Log.d("Analysis", "Total Income: R $totalIncome")
+            Log.d("Analysis", "Highest Expense Category: $highestExpenseCategory")
+
+        }.addOnFailureListener {
+            Log.e("Analysis", "Failed to load transactions: ${it.message}")
         }
-
-        val savedMost = savingsMap.maxByOrNull { it.value }?.key ?: "N/A"
-      //  val overspentMost = overspentMap.maxByOrNull { it.value }?.key ?: "N/A"
-
-        // Display results (replace with actual TextViews)
-        Log.d("Analysis", "Total Expenses: R $totalExpenses")
-        Log.d("Analysis", "Saved Most In: $savedMost")
-       // Log.d("Analysis", "Overspent Most In: $overspentMost")
-
-        // Example usage in UI
-        view?.findViewById<TextView>(R.id.txtTotalExpensesData)?.text = "R $totalExpenses"
-        view?.findViewById<TextView>(R.id.txtSavedMostData)?.text = savedMost
-       // view?.findViewById<TextView>(R.id.txtOverspentData)?.text = overspentMost
     }
+
 
 }
