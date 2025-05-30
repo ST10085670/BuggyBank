@@ -1,4 +1,4 @@
-package com.example.transactionrecords // You can change this to vcmsa.projects.buggybank if needed
+package com.example.transactionrecords
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,8 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import vcmsa.projects.buggybank.R
 import vcmsa.projects.buggybank.Transaction
 
-
-class TransactionRecordsAdapter(private val transactions: List<Transaction>) :
+class TransactionRecordsAdapter(private var transactions: MutableList<Transaction>) :
     RecyclerView.Adapter<TransactionRecordsAdapter.TransactionViewHolder>() {
 
     inner class TransactionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -18,16 +17,6 @@ class TransactionRecordsAdapter(private val transactions: List<Transaction>) :
         val tvPaymentMethod: TextView = itemView.findViewById(R.id.tvPaymentType)
         val tvAmount: TextView = itemView.findViewById(R.id.tvAmount)
         val tvDate: TextView = itemView.findViewById(R.id.tvDate)
-
-
-        // Uncomment when you want to add the expanded view of the transactions
-        // val tvTransactionType: TextView = itemView.findViewById(R.id.tvTransactionType)
-        // val tvDescription: TextView = itemView.findViewById(R.id.tvDescription)
-        // val tvStartDate: TextView = itemView.findViewById(R.id.tvExpStartDate)
-        // val tvEndDate: TextView = itemView.findViewById(R.id.tvExpEndDate)
-
-        // Commented out the expanded layout stuff
-        // val expandedLayout: View = itemView.findViewById(R.id.cvExpandedTransaction)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionViewHolder {
@@ -42,33 +31,25 @@ class TransactionRecordsAdapter(private val transactions: List<Transaction>) :
         holder.tvCategory.text = transaction.category
         holder.tvPaymentMethod.text = transaction.paymentMethod
         holder.tvAmount.text = transaction.amount.toString()
-        holder.tvDate.text = transaction.date.toString()
-
-
-
-        // Uncomment when you want to add the expanded view of the transactions
-        // holder.tvTransactionType.text = transaction.transactionType
-        // holder.tvDescription.text = transaction.description
-        // holder.tvStartDate.text = transaction.startTime.toString()
-        // holder.tvEndDate.text = transaction.endTime.toString()
-
-        // Commented out expanded view toggle
-        /*
-        holder.expandedLayout.visibility = if (transaction.isExpanded) View.VISIBLE else View.GONE
-
-        holder.itemView.setOnClickListener {
-            transaction.isExpanded = !transaction.isExpanded
-            notifyItemChanged(position)
-        }
-        */
+        holder.tvDate.text = transaction.date
 
         val context = holder.itemView.context
-        if (transaction.type.equals("Income", true)) {
-            holder.tvAmount.setTextColor(context.getColor(R.color.green))
-        } else {
-            holder.tvAmount.setTextColor(context.getColor(R.color.red))
-        }
+        holder.tvAmount.setTextColor(
+            if (transaction.type.equals("Income", true))
+                context.getColor(R.color.green)
+            else
+                context.getColor(R.color.red)
+        )
     }
 
     override fun getItemCount(): Int = transactions.size
+
+    /**
+     * Call this method to update the adapter with a new filtered list.
+     */
+    fun setFilteredRecords(filteredRecords: List<Transaction>) {
+        transactions.clear()
+        transactions.addAll(filteredRecords)
+        notifyDataSetChanged()
+    }
 }

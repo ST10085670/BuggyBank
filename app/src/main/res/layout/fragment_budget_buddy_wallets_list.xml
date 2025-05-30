@@ -53,6 +53,7 @@
         android:fontFamily="@font/chakra_petch_bold"
         android:text="+   Add Wallet"
         android:textAlignment="center"
+        android:textAllCaps="true"
         android:textColor="@color/white"
         android:textSize="23sp"
         app:layout_constraintEnd_toEndOf="parent"

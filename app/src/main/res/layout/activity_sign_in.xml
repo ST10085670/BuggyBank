@@ -120,7 +120,39 @@
         app:layout_constraintHorizontal_bias="0.928"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.864" />
+        app:layout_constraintVertical_bias="0.864" 
+        tools:layout_editor_absoluteX="28dp"/>
+
+        <Button
+            android:id="@+id/Sign_in_button"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_weight="1"
+            android:textAllCaps="true"
+            android:backgroundTint="@color/dark_green"
+            android:fontFamily="@font/chakra_petch_bold"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:text="Log in" />
+
+        <Button
+            android:id="@+id/Sign_in_register"
+            android:layout_width="10dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:backgroundTint="@android:color/transparent"
+            app:strokeColor="#283D36"
+            app:strokeWidth="3dp"
+            android:textAllCaps="true"
+            android:fontFamily="@font/chakra_petch_bold"
+            android:text="@string/Register"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+    </LinearLayout>
+
 
     <ImageView
         android:id="@+id/imageView2"
@@ -129,10 +161,10 @@
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toTopOf="@+id/Sign_in_text"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.519"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.781"
+        app:layout_constraintVertical_bias="0.819"
         app:srcCompat="@drawable/logo2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

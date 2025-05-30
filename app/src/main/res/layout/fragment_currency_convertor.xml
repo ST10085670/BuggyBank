@@ -71,6 +71,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.661" />
+        android:textAllCaps="true"
+        android:textColor="@color/white" />
 
     <TextView
         android:id="@+id/tvResult"
@@ -96,6 +98,8 @@
         android:backgroundTint="@color/dark_green"
         android:fontFamily="@font/chakra_petch"
         android:text="Reset"
+        android:textAllCaps="true"
+        android:textColor="@color/black"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
