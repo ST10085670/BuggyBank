@@ -38,7 +38,7 @@ class CreateTransactionFragment : Fragment() {
     private lateinit var btnAddImage: FrameLayout
     private lateinit var imagePreview: ImageView
     private var imageUri: Uri? = null
-    
+
     private val storage = Firebase.storage.reference
     private val galleryLauncher =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
@@ -80,16 +80,16 @@ class CreateTransactionFragment : Fragment() {
             }
 
         }
-    
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.fragment_create_transaction, container, false)
-    
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+
         etTitle = view.findViewById(R.id.etTitle)
         spType = view.findViewById(R.id.spType)
         etAmount = view.findViewById(R.id.etAmount)
@@ -102,12 +102,12 @@ class CreateTransactionFragment : Fragment() {
         btnAdd = view.findViewById(R.id.btnAdd)
         btnAddImage = view.findViewById(R.id.btnAddImage)
         imagePreview = view.findViewById(R.id.imagePreview)
-        
+
         listOf(etDate, etStartTime, etEndTime).forEach {
             it.isFocusable = false
             it.isClickable = true
         }
-        
+
         spType.adapter = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_spinner_dropdown_item,
@@ -120,23 +120,23 @@ class CreateTransactionFragment : Fragment() {
             android.R.layout.simple_spinner_dropdown_item,
             listOf("Select","Clothing", "Entertainment", "Food", "Fuel", "Groceries", "Health", "Housing", "Internet", "Insurance", "Salary", "Wages", "Investments")
         )
-        
+
         spPayment.adapter = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_spinner_dropdown_item,
             listOf("Select","Cash", "Credit Card", "Debit Card")
         )
-        
+
         etDate.setOnClickListener { showDatePicker(etDate) }
         etStartTime.setOnClickListener { showTimePicker(etStartTime) }
         etEndTime.setOnClickListener { showTimePicker(etEndTime) }
         btnAddImage.setOnClickListener { showImagePickerDialog() }
-        
+
         btnAdd.setOnClickListener {
             saveTransaction()
         }
     }
-    
+
     private fun saveTransaction() {
         val title = etTitle.text.toString().trim()
         val type = spType.selectedItem as String
@@ -166,16 +166,16 @@ class CreateTransactionFragment : Fragment() {
             return
         }
         val transaction = Expense(title, type, amount, category, payment, dateOfTransaction, start, end, desc, imageUri?.toString())
-        
+
         val uid = FirebaseAuth.getInstance().currentUser?.uid
         if (uid == null) {
             Toast.makeText(requireContext(), "User not logged in", Toast.LENGTH_SHORT).show()
             return
         }
-        
+
         val dbRef = FirebaseDatabase.getInstance().getReference("users").child(uid).child("transactions")
         val newTransactionId = dbRef.push().key
-        
+
         if (newTransactionId != null) {
             dbRef.child(newTransactionId).setValue(transaction)
                 .addOnSuccessListener {
@@ -187,7 +187,7 @@ class CreateTransactionFragment : Fragment() {
                 }
         }
     }
-    
+
     private fun showDatePicker(target: EditText) {
         val cal = Calendar.getInstance()
         DatePickerDialog(
@@ -202,7 +202,7 @@ class CreateTransactionFragment : Fragment() {
             cal.get(Calendar.DAY_OF_MONTH)
         ).show()
     }
-    
+
     private fun showTimePicker(target: EditText) {
         val cal = Calendar.getInstance()
         TimePickerDialog(
@@ -241,7 +241,7 @@ class CreateTransactionFragment : Fragment() {
     private fun pickFromGallery() {
         galleryLauncher.launch("image/*")
     }
-    
+
     private fun takePhoto() {
         val photoFile = createImageFile()
         photoFile?.let {
